@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	vault "github.com/hashicorp/vault/api"
 )
@@ -33,20 +34,11 @@ func getSecretWithAppRole() (string, error) {
 		return "", fmt.Errorf("unable to read file containing wrapping token: %w", err)
 	}
 
-	unwrappedToken, err := client.Logical().Unwrap(string(wrappingToken))
+	unwrappedToken, err := client.Logical().Unwrap(strings.TrimSuffix(string(wrappingToken), "\n"))
 	if err != nil {
 		return "", fmt.Errorf("unable to unwrap token: %w", err)
 	}
-	id, err := unwrappedToken.TokenID()
-	if err != nil {
-		return "", fmt.Errorf("unable to get token ID from unwrapped token: %w", err)
-	}
-	client.SetToken(id) // one time use
-
-	secretID, err := client.Logical().Write("auth/approle/role/my-role/secret-id", map[string]interface{}{})
-	if err != nil {
-		return "", fmt.Errorf("unable to generate secret ID: %w", err)
-	}
+	secretID := unwrappedToken.Data["secret_id"]
 
 	params := map[string]interface{}{
 		"role_id":   os.Getenv("APPROLE_ROLE_ID"), // the role ID given to you by your administrator
