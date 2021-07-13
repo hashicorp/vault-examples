@@ -26,7 +26,7 @@ func getSecretWithAppRole() (string, error) {
 	// A combination of a Role ID and Secret ID is required to log in to Vault with an AppRole.
 	// The Secret ID is a value that needs to be protected, so instead of the app having knowledge of the secret ID directly,
 	// we have a trusted orchestrator (https://learn.hashicorp.com/tutorials/vault/secure-introduction?in=vault/app-integration#trusted-orchestrator)
-	// give the app access to a response-wrapping token (https://www.vaultproject.io/docs/concepts/response-wrapping).
+	// give the app access to a short-lived response-wrapping token (https://www.vaultproject.io/docs/concepts/response-wrapping).
 	// Read more at: https://learn.hashicorp.com/tutorials/vault/approle-best-practices?in=vault/auth-methods#secretid-delivery-best-practices
 
 	wrappingToken, err := ioutil.ReadFile("path/to/wrapping-token") // placed here by a trusted orchestrator
@@ -50,7 +50,7 @@ func getSecretWithAppRole() (string, error) {
 	}
 	client.SetToken(resp.Auth.ClientToken)
 
-	secret, err := client.Logical().Read("secret/data/creds")
+	secret, err := client.Logical().Read("kv-v2/data/creds")
 	if err != nil {
 		return "", fmt.Errorf("unable to read secret: %w", err)
 	}

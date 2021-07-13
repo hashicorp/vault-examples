@@ -28,7 +28,7 @@ func getSecret() (string, error) {
 	// If you choose to use token-based auth, see get-secret-with-approle.go for an example of how to use response-wrapping tokens for greater security.
 	client.SetToken(os.Getenv("TOKEN")) // If this line is omitted, Vault will use whatever the env var VAULT_TOKEN is set to.
 
-	secret, err := client.Logical().Read("secret/data/creds")
+	secret, err := client.Logical().Read("kv-v2/data/creds")
 	if err != nil {
 		return "", fmt.Errorf("unable to read secret: %w", err)
 	}
