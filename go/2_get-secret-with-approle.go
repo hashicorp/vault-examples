@@ -36,6 +36,7 @@ func getSecretWithAppRole() (string, error) {
 
 	unwrappedToken, err := client.Logical().Unwrap(strings.TrimSuffix(string(wrappingToken), "\n"))
 	if err != nil {
+		// a good opportunity to alert, in case the one-time use wrapping token appears to have already been used
 		return "", fmt.Errorf("unable to unwrap token: %w", err)
 	}
 	secretID := unwrappedToken.Data["secret_id"]
