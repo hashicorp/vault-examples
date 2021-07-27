@@ -19,20 +19,15 @@ curl -X POST -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"type": "approl
 echo "Creating role with dev-policy for approle auth method"
 curl -X POST -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"token_policies":"dev-policy"}' ${VAULT_ADDR}/v1/auth/approle/role/my-role
 
+echo "Creating path for wrapping token"
+mkdir -p go/path/to
+
+echo "Generating wrapping token"
+curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Wrap-Ttl: 5m0s" -d "null" ${VAULT_ADDR}/v1/auth/approle/role/my-role/secret-id | jq -r .wrap_info.token > go/path/to/wrapping-token
+
 ## AWS
 echo "Enabling AWS auth"
 curl -X POST -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"type": "aws"}' ${VAULT_ADDR}/v1/sys/auth/aws
 
 echo "Creating role with dev-policy for AWS auth method"
-curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Request: true" -d '{"token_policies":"dev-policy", "auth_type":"iam","bound_iam_principal_arn":"arn:aws:iam::501359222269:role/vaultAwsDevRole","resolve_aws_unique_ids":"false","ttl":"24h"}' ${VAULT_ADDR}/v1/auth/aws/role/dev-role-iam
-
-
-
-
-mkdir -p go/path/to
-
-# vault write auth/aws/role/dev-role-iam \
-#     auth_type=iam \
-#     bound_iam_principal_arn="arn:aws:iam::501359222269:role/vaultAwsDevRole" \
-#     ttl=24h \
-#     resolve_aws_unique_ids=false
+curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Request: true" -d '{"token_policies":"dev-policy", "auth_type":"iam","bound_iam_principal_arn":"arn:aws:iam::123456789012:role/FakeRoleArn","resolve_aws_unique_ids":"false","ttl":"24h"}' ${VAULT_ADDR}/v1/auth/aws/role/dev-role-iam

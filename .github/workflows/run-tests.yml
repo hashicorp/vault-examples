@@ -23,7 +23,6 @@ jobs:
       run: |
         ./setup.sh
         echo "APPROLE_ROLE_ID=$(curl -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" ${VAULT_ADDR}/v1/auth/approle/role/my-role/role-id | jq -r .data.role_id)" >> $GITHUB_ENV
-        curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Wrap-Ttl: 5m0s" -d "null" ${VAULT_ADDR}/v1/auth/approle/role/my-role/secret-id | jq -r .wrap_info.token > go/path/to/wrapping-token
 
     - name: Run tests
       run: |

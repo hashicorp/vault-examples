@@ -26,21 +26,3 @@ func TestGetSecretWithAppRole(t *testing.T) {
 		t.Fatalf("Expected %s, but got %s", expected, value)
 	}
 }
-
-func TestGetSecretWithAWSAuth(t *testing.T) {
-	value, err := getSecretWithAWSAuthIAM()
-	if err != nil {
-		t.Fatalf("Failed to get secret with app role: %v", err)
-	}
-	if value != expected {
-		t.Fatalf("Expected %s, but got %s", expected, value)
-	}
-
-	// value, err := getSecretWithAWSAuthEC2()
-	// if err != nil {
-	// 	t.Fatalf("Failed to get secret with app role: %v", err)
-	// }
-	// if value != expected {
-	// 	t.Fatalf("Expected %s, but got %s", expected, value)
-	// }
-}

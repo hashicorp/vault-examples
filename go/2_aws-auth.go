@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/hashicorp/go-hclog"
+	"github.com/hashicorp/go-secure-stdlib/awsutil"
 	vault "github.com/hashicorp/vault/api"
 )
 
@@ -13,8 +15,7 @@ import (
 // vault write auth/aws/role/dev-role-iam \
 //     auth_type=iam \
 //     bound_iam_principal_arn="arn:aws:iam::AWS-ACCOUNT-NUMBER:role/AWS-IAM-ROLE-NAME" \
-//     ttl=24h \
-//     resolve_aws_unique_ids=false
+//     ttl=24h
 // Learn more about the available parameters at https://www.vaultproject.io/api/auth/aws#parameters-10
 func getSecretWithAWSAuthIAM() (string, error) {
 	vaultAddr := os.Getenv("VAULT_ADDR")
@@ -28,19 +29,20 @@ func getSecretWithAWSAuthIAM() (string, error) {
 		return "", fmt.Errorf("unable to initialize Vault client: %w", err)
 	}
 
+	logger := hclog.Default()
+
 	// If environment variables are empty, will fall back on other AWS-provided mechanisms to retrieve credentials.
-	// creds, err := awsAuth.RetrieveCreds(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), os.Getenv("AWS_SESSION_TOKEN"), hclog.Default())
-	// if err != nil {
-	// 	return "", fmt.Errorf("unable to retrieve creds from STS: %w", err)
-	// }
+	creds, err := awsutil.RetrieveCreds(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), os.Getenv("AWS_SESSION_TOKEN"), logger)
+	if err != nil {
+		return "", fmt.Errorf("unable to retrieve creds from STS: %w", err)
+	}
 
-	// the AWS SDKs work like this: if no cred env vars are provided, then the AWS SDK will retrieve temporary credentials from the instance metadata service on that EC2 instance.
-	// not sure how it functions with lambda or ECS tasks, but it somehow returns temporary session creds from AWS either way.
-
-	// params, err := awsAuth.GenerateLoginData(creds, "TODO_THINGY", os.Getenv("AWS_DEFAULT_REGION"))
-	// if err != nil {
-	// 	return "", err
-	// }
+	// the optional second parameter can be used to help mitigate replay attacks,
+	// when the role in Vault is configured with resolve_aws_unique_ids = true: https://www.vaultproject.io/docs/auth/aws#iam-auth-method
+	params, err := awsutil.GenerateLoginData(creds, "Replace-With-IAM-Server-Id", os.Getenv("AWS_DEFAULT_REGION"), logger)
+	if err != nil {
+		return "", err
+	}
 	if params == nil {
 		return "", fmt.Errorf("got nil response from GenerateLoginData")
 	}
@@ -72,54 +74,3 @@ func getSecretWithAWSAuthIAM() (string, error) {
 
 	return value, nil
 }
-
-// func getSecretWithAWSAuthEC2() (string, error) {
-// }
-
-// GenerateLoginData populates the necessary data to send to the Vault server for generating a token
-// func GenerateLoginData(creds *credentials.Credentials, headerValue, configuredRegion string) (map[string]interface{}, error) {
-// 	loginData := make(map[string]interface{})
-
-// 	// Use the credentials we've found to construct an STS session
-// 	region, err := awsutil.GetRegion(configuredRegion)
-// 	if err != nil {
-// 		hclog.Default().Warn(fmt.Sprintf("defaulting region to %q due to %s", awsutil.DefaultRegion, err.Error()))
-// 		region = awsutil.DefaultRegion
-// 	}
-// 	stsSession, err := session.NewSessionWithOptions(session.Options{
-// 		Config: aws.Config{
-// 			Credentials:      creds,
-// 			Region:           &region,
-// 			EndpointResolver: endpoints.ResolverFunc(stsSigningResolver),
-// 		},
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	var params *sts.GetCallerIdentityInput
-// 	svc := sts.New(stsSession)
-// 	stsRequest, _ := svc.GetCallerIdentityRequest(params)
-
-// 	// Inject the required auth header value, if supplied, and then sign the request including that header
-// 	if headerValue != "" {
-// 		stsRequest.HTTPRequest.Header.Add(iamServerIdHeader, headerValue)
-// 	}
-// 	stsRequest.Sign()
-
-// 	// Now extract out the relevant parts of the request
-// 	headersJson, err := json.Marshal(stsRequest.HTTPRequest.Header)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	requestBody, err := ioutil.ReadAll(stsRequest.HTTPRequest.Body)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	loginData["iam_http_request_method"] = stsRequest.HTTPRequest.Method
-// 	loginData["iam_request_url"] = base64.StdEncoding.EncodeToString([]byte(stsRequest.HTTPRequest.URL.String()))
-// 	loginData["iam_request_headers"] = base64.StdEncoding.EncodeToString(headersJson)
-// 	loginData["iam_request_body"] = base64.StdEncoding.EncodeToString(requestBody)
-
-// 	return loginData, nil
-// }
