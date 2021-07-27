@@ -12,11 +12,7 @@ import (
 
 // Fetches a key-value secret (kv-v2 secrets engine) after authenticating with a token
 func getSecret() (string, error) {
-	vaultAddr := os.Getenv("VAULT_ADDR")
-
-	config := &vault.Config{
-		Address: vaultAddr,
-	}
+	config := vault.DefaultConfig() // modify for more granular configuration
 
 	client, err := vault.NewClient(config)
 	if err != nil {

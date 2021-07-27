@@ -12,11 +12,7 @@ import (
 // Fetches a key-value secret (kv-v2) after authenticating via AppRole,
 // an auth method used by machines that are unable to use platform-based authentication mechanisms like AWS Auth, Kubernetes Auth, etc.
 func getSecretWithAppRole() (string, error) {
-	vaultAddr := os.Getenv("VAULT_ADDR")
-
-	config := &vault.Config{
-		Address: vaultAddr,
-	}
+	config := vault.DefaultConfig() // modify for more granular configuration
 
 	client, err := vault.NewClient(config)
 	if err != nil {
@@ -41,8 +37,14 @@ func getSecretWithAppRole() (string, error) {
 	}
 	secretID := unwrappedToken.Data["secret_id"]
 
+	// the role ID given to you by your administrator
+	roleID := os.Getenv("APPROLE_ROLE_ID")
+	if roleID == "" {
+		return "", fmt.Errorf("no role ID was provided in APPROLE_ROLE_ID env var")
+	}
+
 	params := map[string]interface{}{
-		"role_id":   os.Getenv("APPROLE_ROLE_ID"), // the role ID given to you by your administrator
+		"role_id":   roleID,
 		"secret_id": secretID,
 	}
 	resp, err := client.Logical().Write("auth/approle/login", params)

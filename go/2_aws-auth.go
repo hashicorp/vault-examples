@@ -18,11 +18,7 @@ import (
 //     ttl=24h
 // Learn more about the available parameters at https://www.vaultproject.io/api/auth/aws#parameters-10
 func getSecretWithAWSAuthIAM() (string, error) {
-	vaultAddr := os.Getenv("VAULT_ADDR")
-
-	config := &vault.Config{
-		Address: vaultAddr,
-	}
+	config := vault.DefaultConfig() // modify for more granular configuration
 
 	client, err := vault.NewClient(config)
 	if err != nil {
