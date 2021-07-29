@@ -1,0 +1,3 @@
+vault/
+.DS_Store
+go/path/*

@@ -1,0 +1,30 @@
+name: Vault Examples Tests
+on: [push]
+jobs:
+  Run-Tests:
+    runs-on: ubuntu-latest
+    env:
+      VAULT_ADDR: http://0.0.0.0:8200
+      VAULT_DEV_ROOT_TOKEN_ID: testtoken
+      VAULT_TOKEN: testtoken
+      EXPECTED_SECRET_VALUE: Hashi123
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run docker-compose
+      run: docker-compose up -d vault
+
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '^1.16.5'
+
+    - name: Set up environment
+      run: |
+        ./setup.sh
+        echo "APPROLE_ROLE_ID=$(curl -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" ${VAULT_ADDR}/v1/auth/approle/role/my-role/role-id | jq -r .data.role_id)" >> $GITHUB_ENV
+
+    - name: Run tests
+      run: |
+        cd go
+        TOKEN=${VAULT_DEV_ROOT_TOKEN_ID} go test -count=1
