@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using VaultSharp;
 using VaultSharp.V1.AuthMethods;
 using VaultSharp.V1.AuthMethods.Token;
@@ -13,12 +14,16 @@ namespace dotnet
     {
         static void Main(string[] args)
         {
-            // Initialize one of the several auth methods.
-            IAuthMethodInfo authMethod = new TokenAuthMethodInfo("MY_VAULT_TOKEN");
+            // Get the token via env variable
+            var token = Environment.GetEnvironmentVariable("TOKEN");
+
+            // Provide Vault Token
+            IAuthMethodInfo authMethod = new TokenAuthMethodInfo(token);
 
             // Initialize settings. You can also set proxies, custom delegates etc. here.
-            var vaultClientSettings = new VaultClientSettings("https://MY_VAULT_SERVER:8200", authMethod);
-
+            // Note: VaultSharp performs a lazy login in this case, so login will only be attempted when 
+            // performing some action on Vault
+            var vaultClientSettings = new VaultClientSettings("https://127.0.0.1:8200", authMethod);
             IVaultClient vaultClient = new VaultClient(vaultClientSettings);
 
             // Use client to read a key-value secret.
@@ -27,11 +32,19 @@ namespace dotnet
             // Please use named parameters for 100% clarity of code. (the method also takes version and wrapTimeToLive as params)
 
             // Note: It is generally not recommended to use .Result
-            Secret<SecretData> kv2Secret = vaultClient.V1.Secrets.KeyValue.V2
-                               .ReadSecretAsync(path: "secretPath", mountPoint: "mountPointIfNotDefault").Result;
-
-            // Generate a dynamic Consul credential
-            Secret<ConsulCredentials> consulCreds = vaultClient.V1.Secrets.Consul.GetCredentialsAsync(null, null).Result;
-            string consulToken = consulCreds.Data.Token;        }
+            Secret<SecretData> kv2Secret = null;
+            try
+            {
+                kv2Secret = vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "kv-v2/data/creds").Result;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message); 
+                return;  
+            }
+            
+            // gets a secret at kv2Secret/
+            Console.WriteLine(kv2Secret.ToString());
+        }
     }
 }
