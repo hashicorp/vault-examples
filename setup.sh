@@ -30,4 +30,8 @@ echo "Enabling AWS auth"
 curl -X POST -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"type": "aws"}' ${VAULT_ADDR}/v1/sys/auth/aws
 
 echo "Creating role with dev-policy for AWS auth method"
-curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Request: true" -d '{"token_policies":"dev-policy", "auth_type":"iam","bound_iam_principal_arn":"arn:aws:iam::123456789012:role/FakeRoleArn","resolve_aws_unique_ids":"false","ttl":"24h"}' ${VAULT_ADDR}/v1/auth/aws/role/dev-role-iam
+curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Request: true" -d "{\"token_policies\":\"dev-policy\", \"auth_type\":\"iam\", \"bound_iam_principal_arn\":\"arn:aws:iam::${AWS_ACCOUNT_ID}:role/${AWS_ROLE_NAME}\", \"resolve_aws_unique_ids\":\"false\", \"ttl\":\"24h\"}" ${VAULT_ADDR}/v1/auth/aws/role/dev-role-iam
+
+## USERPASS
+echo "Enabling userpass auth"
+curl -X POST -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"type": "userpass"}' ${VAULT_ADDR}/v1/sys/auth/userpass

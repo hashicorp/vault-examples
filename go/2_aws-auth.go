@@ -2,11 +2,9 @@ package main
 
 import (
 	"fmt"
-	"os"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-secure-stdlib/awsutil"
 	vault "github.com/hashicorp/vault/api"
+	auth "github.com/hashicorp/vault/auth/aws"
 )
 
 // Fetches a key-value secret (kv-v2) after authenticating to Vault via AWS IAM,
@@ -25,31 +23,22 @@ func getSecretWithAWSAuthIAM() (string, error) {
 		return "", fmt.Errorf("unable to initialize Vault client: %w", err)
 	}
 
-	logger := hclog.Default()
-
-	// If environment variables are empty, will fall back on other AWS-provided mechanisms to retrieve credentials.
-	creds, err := awsutil.RetrieveCreds(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), os.Getenv("AWS_SESSION_TOKEN"), logger)
+	// "auth" will be the specific auth package chosen by the user, like vault/auth/aws or vault/auth/gcp (a new set of modules)
+	// if their desired auth provider does not have a corresponding auth package, they will need to write to that auth method's /login endpoint directly
+	awsAuth, err := auth.NewAWSAuth(
+		auth.WithCredentialsFile("path/to/creds/file"), // if you don't pass any LoginOptions here, it will default to looking for creds in env vars
+	)
 	if err != nil {
-		return "", fmt.Errorf("unable to retrieve creds from STS: %w", err)
+		return "", fmt.Errorf("unable to initialize AWS auth method: %w", err)
 	}
 
-	// the optional second parameter can be used to help mitigate replay attacks,
-	// when the role in Vault is configured with resolve_aws_unique_ids = true: https://www.vaultproject.io/docs/auth/aws#iam-auth-method
-	params, err := awsutil.GenerateLoginData(creds, "Replace-With-IAM-Server-Id", os.Getenv("AWS_DEFAULT_REGION"), logger)
+	authInfo, err := client.Auth().Login(awsAuth)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("unable to login to AWS auth method: %w", err)
 	}
-	if params == nil {
-		return "", fmt.Errorf("got nil response from GenerateLoginData")
+	if authInfo == nil {
+		return "", fmt.Errorf("no auth info was returned after login")
 	}
-	params["role"] = "dev-role-iam" // the name of the role in Vault that was created with this IAM principal ARN bound to it
-
-	resp, err := client.Logical().Write("auth/aws/login", params)
-	if err != nil {
-		return "", fmt.Errorf("unable to log in with AWS IAM auth: %w", err)
-	}
-
-	client.SetToken(resp.Auth.ClientToken)
 
 	secret, err := client.Logical().Read("kv-v2/data/creds")
 	if err != nil {
