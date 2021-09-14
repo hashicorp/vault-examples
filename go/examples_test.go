@@ -26,3 +26,29 @@ func TestGetSecretWithAppRole(t *testing.T) {
 		t.Fatalf("Expected %s, but got %s", expected, value)
 	}
 }
+
+func TestGetSecretWithAWSAuthIAM(t *testing.T) {
+	if os.Getenv("LOCAL_TESTING") == "" {
+		t.Skip("skipping test in CI for now")
+	}
+	value, err := getSecretWithAWSAuthIAM()
+	if err != nil {
+		t.Fatalf("Failed to get secret with AWS IAM: %v", err)
+	}
+	if value != expected {
+		t.Fatalf("Expected %s, but got %s", expected, value)
+	}
+}
+
+func TestGetSecretWithGCPAuthIAM(t *testing.T) {
+	if os.Getenv("LOCAL_TESTING") == "" {
+		t.Skip("skipping test in CI for now")
+	}
+	value, err := getSecretWithGCPAuthIAM()
+	if err != nil {
+		t.Fatalf("Failed to get secret with GCP IAM: %v", err)
+	}
+	if value != expected {
+		t.Fatalf("Expected %s, but got %s", expected, value)
+	}
+}

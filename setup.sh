@@ -30,4 +30,11 @@ echo "Enabling AWS auth"
 curl -X POST -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"type": "aws"}' ${VAULT_ADDR}/v1/sys/auth/aws
 
 echo "Creating role with dev-policy for AWS auth method"
-curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Request: true" -d '{"token_policies":"dev-policy", "auth_type":"iam","bound_iam_principal_arn":"arn:aws:iam::123456789012:role/FakeRoleArn","resolve_aws_unique_ids":"false","ttl":"24h"}' ${VAULT_ADDR}/v1/auth/aws/role/dev-role-iam
+curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Request: true" -d "{\"token_policies\":\"dev-policy\", \"auth_type\":\"iam\", \"bound_iam_principal_arn\":\"arn:aws:iam::${AWS_ACCOUNT_ID}:role/${AWS_ROLE_NAME}\", \"resolve_aws_unique_ids\":\"false\", \"ttl\":\"24h\"}" ${VAULT_ADDR}/v1/auth/aws/role/dev-role-iam
+
+## GCP
+echo "Enabling GCP auth"
+curl -X POST -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"type":"gcp"}' ${VAULT_ADDR}/v1/sys/auth/gcp
+
+echo "Creating role with dev-policy for GCP auth method"
+curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d "{\"bound_service_accounts\":\"${GCP_SERVICE_ACCOUNT_NAME}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com\", \"policies\":\"dev-policy\", \"type\":\"iam\"}" ${VAULT_ADDR}/v1/auth/gcp/role/dev-role-iam
