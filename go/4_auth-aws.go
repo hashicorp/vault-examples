@@ -44,13 +44,18 @@ func getSecretWithAWSAuthIAM() (string, error) {
 	}
 	params["role"] = "dev-role-iam" // the name of the role in Vault that was created with this IAM principal ARN bound to it
 
+	// log in to Vault's AWS auth method
 	resp, err := client.Logical().Write("auth/aws/login", params)
 	if err != nil {
 		return "", fmt.Errorf("unable to log in with AWS IAM auth: %w", err)
 	}
+	if resp == nil || resp.Auth == nil || resp.Auth.ClientToken == "" {
+		return "", fmt.Errorf("login response did not return client token")
+	}
 
 	client.SetToken(resp.Auth.ClientToken)
 
+	// get secret
 	secret, err := client.Logical().Read("kv-v2/data/creds")
 	if err != nil {
 		return "", fmt.Errorf("unable to read secret: %w", err)

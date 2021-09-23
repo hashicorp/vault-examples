@@ -24,7 +24,6 @@ func getSecretWithAppRole() (string, error) {
 	// we have a trusted orchestrator (https://learn.hashicorp.com/tutorials/vault/secure-introduction?in=vault/app-integration#trusted-orchestrator)
 	// give the app access to a short-lived response-wrapping token (https://www.vaultproject.io/docs/concepts/response-wrapping).
 	// Read more at: https://learn.hashicorp.com/tutorials/vault/approle-best-practices?in=vault/auth-methods#secretid-delivery-best-practices
-
 	wrappingToken, err := ioutil.ReadFile("path/to/wrapping-token") // placed here by a trusted orchestrator
 	if err != nil {
 		return "", fmt.Errorf("unable to read file containing wrapping token: %w", err)
@@ -43,6 +42,7 @@ func getSecretWithAppRole() (string, error) {
 		return "", fmt.Errorf("no role ID was provided in APPROLE_ROLE_ID env var")
 	}
 
+	// log in to Vault's AppRole auth method
 	params := map[string]interface{}{
 		"role_id":   roleID,
 		"secret_id": secretID,
@@ -51,8 +51,13 @@ func getSecretWithAppRole() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("unable to log in with approle: %w", err)
 	}
+	if resp == nil || resp.Auth == nil || resp.Auth.ClientToken == "" {
+		return "", fmt.Errorf("login response did not return client token")
+	}
+
 	client.SetToken(resp.Auth.ClientToken)
 
+	// get secret
 	secret, err := client.Logical().Read("kv-v2/data/creds")
 	if err != nil {
 		return "", fmt.Errorf("unable to read secret: %w", err)

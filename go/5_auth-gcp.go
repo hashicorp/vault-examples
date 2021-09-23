@@ -41,7 +41,7 @@ func getSecretWithGCPAuthIAM() (string, error) {
 		return "", fmt.Errorf("unable to sign JWT for authenticating to GCP: %w", err)
 	}
 
-	// send login request to Vault with signed JWT token
+	// log in to Vault's GCP auth method with signed JWT token
 	params := map[string]interface{}{
 		"role": "dev-role-iam", // the name of the role in Vault that was created with this IAM bound to it
 		"jwt":  jwtResp.SignedJwt,
@@ -53,9 +53,13 @@ func getSecretWithGCPAuthIAM() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("unable to log in with GCP IAM auth: %w", err)
 	}
+	if resp == nil || resp.Auth == nil || resp.Auth.ClientToken == "" {
+		return "", fmt.Errorf("login response did not return client token")
+	}
 
 	client.SetToken(resp.Auth.ClientToken)
 
+	// get secret
 	secret, err := client.Logical().Read("kv-v2/data/creds")
 	if err != nil {
 		return "", fmt.Errorf("unable to read secret: %w", err)
