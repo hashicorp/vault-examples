@@ -7,18 +7,18 @@ using VaultSharp.V1.Commons;
 
 // WARNING: The code in this hello-world file is potentially insecure. It is not safe for use in production.
 // This is just a quickstart for trying out the Vault client library for the first time.GetSecretWithToken()
-namespace dotnet
+namespace Examples
 {
-    class TokenAuthExample
+    public class TokenAuthExample
     {
-        string GetSecretWithToken()
+        public string GetSecretWithToken()
         {
             // Get the token via env variable
             var token = Environment.GetEnvironmentVariable("VAULT_TOKEN");
 
             // Address of vault server
-            var vaultAddr = "http://127.0.0.1:8200";
-
+            var vaultAddr = Environment.GetEnvironmentVariable("VAULT_ADDR");
+            
             // Initialize settings. You can also set proxies, custom delegates etc. here.
             // Note: VaultSharp performs a lazy login in this case, so login will only be attempted when 
             // performing some action on Vault (e.g. reading a secret)
@@ -27,11 +27,10 @@ namespace dotnet
             var vaultClientSettings = new VaultClientSettings(vaultAddr, authMethod);
             IVaultClient vaultClient = new VaultClient(vaultClientSettings);
 
+            // We can retreive the secret from there
             Secret<SecretData> kv2Secret = null;
             try
             {   
-                // Very important to provide mountpath and secret name as two separate parameters. Don't provide a single combined string.
-                // Please use named parameters for 100% clarity of code. (the method also takes version and wrapTimeToLive as params)
                 kv2Secret = vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "/creds").Result;
             }
             catch(Exception e)

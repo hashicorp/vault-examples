@@ -7,11 +7,11 @@ using VaultSharp.V1.AuthMethods.AppRole;
 using VaultSharp.V1.AuthMethods.Token;
 using VaultSharp.V1.Commons;
 
-namespace dotnet 
+namespace Examples 
 {
-    class ApproleAuthExample
+    public class ApproleAuthExample
     {
-        public static string GetSecretWithAppRole()
+        public string GetSecretWithAppRole()
         {
             // A combination of a Role ID and Secret ID is required to log in to Vault with an AppRole.
 	        // The Secret ID is a value that needs to be protected, so instead of the app having knowledge of the secret ID directly,
@@ -21,7 +21,7 @@ namespace dotnet
             var roleId = Environment.GetEnvironmentVariable("APPROLE_ROLE_ID");
             var vaultAddr = "http://127.0.0.1:8200";
 
-            string wrappingToken = File.ReadAllText("../dotnet/path/to/wrapping-token"); // placed here by a trusted orchestrator
+            string wrappingToken = File.ReadAllText("../../../path/to/wrapping-token"); // placed here by a trusted orchestrator
 
             // We need to create two VaultClient objects for authenticating via AppRole. The first is for
             // using the unwrap utility. We need to initalize the client with the wrapping token.
@@ -30,8 +30,8 @@ namespace dotnet
 
             IVaultClient wrappedVaultClient = new VaultClient(wrappedVaultClientSettings);
 
-            // because our client is initialized with the wrapping token, we don't and SHOULD NOT
-            // pass the token in the parameter. Else, it'll deplete its single usage.
+            // We pass null here instead of the wrapping token to avoid depleting its single usage
+            // given that we already initalized our client with the wrapping token
             Secret<Dictionary<string, object>> secretIdData =  wrappedVaultClient.V1.System
                 .UnwrapWrappedResponseDataAsync<Dictionary<string, object>>(null).Result; 
 
@@ -48,8 +48,6 @@ namespace dotnet
             Secret<SecretData> kv2Secret = null;
             try
             {   
-                // Very important to provide mountpath and secret name as two separate parameters. Don't provide a single combined string.
-                // Please use named parameters for 100% clarity of code. (the method also takes version and wrapTimeToLive as params)
                 kv2Secret = vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "/creds").Result;
             }
             catch(Exception e)
