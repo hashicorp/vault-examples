@@ -11,6 +11,9 @@ namespace Examples
 {
     public class ApproleAuthExample
     {
+        /// <summary>
+        /// Fetches a key-vaule secret (kv-v2) after authenticating to Vault via AppRole authentication
+        /// </summary>
         public string GetSecretWithAppRole()
         {
             // A combination of a Role ID and Secret ID is required to log in to Vault with an AppRole.
@@ -37,8 +40,7 @@ namespace Examples
 
             var secretId = secretIdData.Data["secret_id"]; // Grab the secret_id 
 
-            // We create a second VaultClient and initialize it with the AppRole auth method and our 
-            // new credentials.
+            // We create a second VaultClient and initialize it with the AppRole auth method and our new credentials.
             IAuthMethodInfo authMethod = new AppRoleAuthMethodInfo(roleId, secretId.ToString());
             var vaultClientSettings = new VaultClientSettings(vaultAddr, authMethod);
 

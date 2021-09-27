@@ -11,23 +11,25 @@ namespace Examples
 {
     public class TokenAuthExample
     {
+        /// <summary>
+        /// Fetches a key-vaule secret (kv-v2) after authenticating to Vault via Token authentication 
+        /// </summary>
         public string GetSecretWithToken()
         {
-            // Get the token via env variable
+            /* WARNING: Storing any long-lived token with secret access in an environment variable poses a security risk.
+	           Additionally, root tokens should never be used in production or against Vault installations containing real secrets.
+	           See approle-with-response-wrapping.go for an example of how to use wrapping tokens for greater security. */
             var token = Environment.GetEnvironmentVariable("VAULT_TOKEN");
-
-            // Address of vault server
             var vaultAddr = Environment.GetEnvironmentVariable("VAULT_ADDR");
             
-            // Initialize settings. You can also set proxies, custom delegates etc. here.
-            // Note: VaultSharp performs a lazy login in this case, so login will only be attempted when 
-            // performing some action on Vault (e.g. reading a secret)
+            /* VaultSharp performs a lazy login in this case, so login will only be attempted when 
+               performing some action on Vault (e.g. reading a secret) */
             IAuthMethodInfo authMethod = new TokenAuthMethodInfo(token);
 
             var vaultClientSettings = new VaultClientSettings(vaultAddr, authMethod);
             IVaultClient vaultClient = new VaultClient(vaultClientSettings);
 
-            // We can retreive the secret from there
+            // We can retreive the secret from the VaultClient object
             Secret<SecretData> kv2Secret = null;
             try
             {   
