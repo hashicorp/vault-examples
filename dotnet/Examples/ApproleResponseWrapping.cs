@@ -11,6 +11,8 @@ namespace Examples
 {
     public class ApproleAuthExample
     {
+        const string DefaultTokenPath = "../../../path/to/wrapping-token";
+        
         /// <summary>
         /// Fetches a key-value secret (kv-v2) after authenticating to Vault via AppRole authentication
         /// </summary>
@@ -32,8 +34,9 @@ namespace Examples
             {
                 throw new System.ArgumentNullException("AppRole Role Id");
             }
-
-            string wrappingToken = File.ReadAllText("../../../path/to/wrapping-token"); // placed here by a trusted orchestrator
+            // Get the path to wrapping token or fall back on default path
+            string pathToToken = !String.IsNullOrEmpty(Environment.GetEnvironmentVariable("WRAPPING_TOKEN_PATH")) ? Environment.GetEnvironmentVariable("WRAPPING_TOKEN_PATH") : DefaultTokenPath;
+            string wrappingToken = File.ReadAllText(pathToToken); // placed here by a trusted orchestrator
 
             // We need to create two VaultClient objects for authenticating via AppRole. The first is for
             // using the unwrap utility. We need to initialize the client with the wrapping token.
