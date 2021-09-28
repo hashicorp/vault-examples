@@ -6,7 +6,7 @@ using VaultSharp.V1.AuthMethods.Token;
 using VaultSharp.V1.Commons;
 
 // WARNING: The code in this hello-world file is potentially insecure. It is not safe for use in production.
-// This is just a quickstart for trying out the Vault client library for the first time.GetSecretWithToken()
+// This is just a quickstart for trying out the Vault client library for the first time.
 namespace Examples
 {
     public class TokenAuthExample

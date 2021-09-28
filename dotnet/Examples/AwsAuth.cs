@@ -73,8 +73,6 @@ namespace Examples
             Secret<SecretData> kv2Secret = null;
             try
             {   
-                // Very important to provide mountpath and secret name as two separate parameters. Don't provide a single combined string.
-                // Please use named parameters for 100% clarity of code. (the method also takes version and wrapTimeToLive as params)
                 kv2Secret = vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "/creds").Result;
             }
             catch(Exception e)

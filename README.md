@@ -10,7 +10,7 @@ Find the relevant file inside the designated directory for the language of your 
 These examples use the community maintained library: [VaultSharp](https://github.com/rajanadar/VaultSharp)
 
 ### Go
-These examples use the HashiCorp maintained client library: [HashiCorp Vault](https://github.com/hashicorp/vault)
+These examples use the HashiCorp maintained client library: [HashiCorp Vault](https://pkg.go.dev/github.com/hashicorp/vault/api)
 
 ## How To Contribute
 
