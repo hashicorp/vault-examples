@@ -32,7 +32,16 @@ namespace Examples
         public string GetSecretGcp()
         {
             var vaultAddr = Environment.GetEnvironmentVariable("VAULT_ADDR");
+            if(String.IsNullOrEmpty(vaultAddr))
+            {
+                throw new System.ArgumentNullException("Vault Address");
+            }
+
             var roleName = Environment.GetEnvironmentVariable("GCP_ROLE");
+            if(String.IsNullOrEmpty(roleName))
+            {
+                throw new System.ArgumentNullException("GCP Role Name");
+            }
 
             // Learn about authenticating to GCS with service account credentials at https://cloud.google.com/docs/authentication/production
             if(String.IsNullOrEmpty(Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS")))

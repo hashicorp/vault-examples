@@ -21,8 +21,17 @@ namespace Examples
 	        // we have a trusted orchestrator (https://learn.hashicorp.com/tutorials/vault/secure-introduction?in=vault/app-integration#trusted-orchestrator)
 	        // give the app access to a short-lived response-wrapping token (https://www.vaultproject.io/docs/concepts/response-wrapping).
 	        // Read more at: https://learn.hashicorp.com/tutorials/vault/approle-best-practices?in=vault/auth-methods#secretid-delivery-best-practices             
-            var roleId = Environment.GetEnvironmentVariable("APPROLE_ROLE_ID");
             var vaultAddr = Environment.GetEnvironmentVariable("VAULT_ADDR");
+            if(String.IsNullOrEmpty(vaultAddr))
+            {
+                throw new System.ArgumentNullException("Vault Address");
+            }
+
+            var roleId = Environment.GetEnvironmentVariable("APPROLE_ROLE_ID");
+            if(String.IsNullOrEmpty(vaultAddr))
+            {
+                throw new System.ArgumentNullException("AppRole Role Id");
+            }
 
             string wrappingToken = File.ReadAllText("../../../path/to/wrapping-token"); // placed here by a trusted orchestrator
 

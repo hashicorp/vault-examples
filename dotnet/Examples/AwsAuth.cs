@@ -31,7 +31,16 @@ namespace Examples
         public string GetSecretAWSAuthIAM()
         {
             var vaultAddr = Environment.GetEnvironmentVariable("VAULT_ADDR");
+            if(String.IsNullOrEmpty(vaultAddr))
+            {
+                throw new System.ArgumentNullException("Vault Address");
+            }
+
             var roleName = Environment.GetEnvironmentVariable("AWS_ROLE_NAME");
+            if(String.IsNullOrEmpty(roleName))
+            {
+                throw new System.ArgumentNullException("AWS Role Name");
+            }
 
             var amazonSecurityTokenServiceConfig = new AmazonSecurityTokenServiceConfig();
 

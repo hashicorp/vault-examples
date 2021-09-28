@@ -19,9 +19,18 @@ namespace Examples
             /* WARNING: Storing any long-lived token with secret access in an environment variable poses a security risk.
 	           Additionally, root tokens should never be used in production or against Vault installations containing real secrets.
 	           See approle-with-response-wrapping.go for an example of how to use wrapping tokens for greater security. */
-            var token = Environment.GetEnvironmentVariable("VAULT_TOKEN");
             var vaultAddr = Environment.GetEnvironmentVariable("VAULT_ADDR");
-            
+            if(String.IsNullOrEmpty(vaultAddr))
+            {
+                throw new System.ArgumentNullException("Vault Address");
+            }
+
+            var token = Environment.GetEnvironmentVariable("VAULT_TOKEN");
+            if(String.IsNullOrEmpty(token))
+            {
+                throw new System.ArgumentNullException("Vault Token");
+            }
+
             /* VaultSharp performs a lazy login in this case, so login will only be attempted when 
                performing some action on Vault (e.g. reading a secret) */
             IAuthMethodInfo authMethod = new TokenAuthMethodInfo(token);
