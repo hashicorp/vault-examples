@@ -35,10 +35,9 @@ namespace Examples
             var roleName = Environment.GetEnvironmentVariable("GCP_ROLE");
 
             // Learn about authenticating to GCS with service account credentials at https://cloud.google.com/docs/authentication/production
-            if(!Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS"))
+            if(String.IsNullOrEmpty(Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS")))
             {
                 Console.WriteLine("WARNING: Environment variable GOOGLE_APPLICATION_CREDENTIALS was not set. IAM client for JWT signing will fall back to default instance credentials.");
-                return;
             }
 
             var jwt = SignJWT();

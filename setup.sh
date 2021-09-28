@@ -24,3 +24,9 @@ mkdir -p go/path/to
 
 echo "Generating wrapping token"
 curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Wrap-Ttl: 5m0s" -d "null" ${VAULT_ADDR}/v1/auth/approle/role/my-role/secret-id | jq -r .wrap_info.token > go/path/to/wrapping-token
+
+echo "Creating path for dotnet wrapping token"
+mkdir -p dotnet/ExampleTests/path/to
+
+echo "Generating wrapping token for dotnet tests"
+curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Wrap-Ttl: 5m0s" -d "null" ${VAULT_ADDR}/v1/auth/approle/role/my-role/secret-id | jq -r .wrap_info.token > dotnet/ExampleTests/path/to/wrapping-token

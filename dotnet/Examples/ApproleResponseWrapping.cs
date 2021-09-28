@@ -22,7 +22,7 @@ namespace Examples
 	        // give the app access to a short-lived response-wrapping token (https://www.vaultproject.io/docs/concepts/response-wrapping).
 	        // Read more at: https://learn.hashicorp.com/tutorials/vault/approle-best-practices?in=vault/auth-methods#secretid-delivery-best-practices             
             var roleId = Environment.GetEnvironmentVariable("APPROLE_ROLE_ID");
-            var vaultAddr = "http://127.0.0.1:8200";
+            var vaultAddr = Environment.GetEnvironmentVariable("VAULT_ADDR");
 
             string wrappingToken = File.ReadAllText("../../../path/to/wrapping-token"); // placed here by a trusted orchestrator
 
