@@ -43,11 +43,11 @@ namespace Examples
             IAuthMethodInfo wrappedTokenAuthMethod = new TokenAuthMethodInfo(wrappingToken);
             var wrappedVaultClientSettings = new VaultClientSettings(vaultAddr, wrappedTokenAuthMethod);
 
-            IVaultClient wrappedVaultClient = new VaultClient(wrappedVaultClientSettings);
+            IVaultClient vaultClientForUnwrapping = new VaultClient(wrappedVaultClientSettings);
 
             // We pass null here instead of the wrapping token to avoid depleting its single usage
             // given that we already initialized our client with the wrapping token
-            Secret<Dictionary<string, object>> secretIdData =  wrappedVaultClient.V1.System
+            Secret<Dictionary<string, object>> secretIdData =  vaultClientForUnwrapping.V1.System
                 .UnwrapWrappedResponseDataAsync<Dictionary<string, object>>(null).Result; 
 
             var secretId = secretIdData.Data["secret_id"]; // Grab the secret_id 
