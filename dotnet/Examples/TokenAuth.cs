@@ -18,7 +18,7 @@ namespace Examples
         {
             /* WARNING: Storing any long-lived token with secret access in an environment variable poses a security risk.
 	           Additionally, root tokens should never be used in production or against Vault installations containing real secrets.
-	           See approle-with-response-wrapping.go for an example of how to use wrapping tokens for greater security. */
+	           See the files ending in "Auth" for examples of how to securely log in to Vault using various auth methods. */
             var vaultAddr = Environment.GetEnvironmentVariable("VAULT_ADDR");
             if(String.IsNullOrEmpty(vaultAddr))
             {
