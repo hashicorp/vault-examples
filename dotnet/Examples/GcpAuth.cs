@@ -58,15 +58,7 @@ namespace Examples
 
             // We can retrieve the secret after creating our VaultClient object
             Secret<SecretData> kv2Secret = null;
-            try
-            {   
-                kv2Secret = vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "/creds").Result;
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine($"An error occurred while retreiving secret: ", e.Message); 
-                return string.Empty;
-            }
+            kv2Secret = vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "/creds").Result;
             
             var password = kv2Secret.Data.Data["password"];
             

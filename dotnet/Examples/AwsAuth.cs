@@ -58,16 +58,7 @@ namespace Examples
             iamRequest.Headers.Add("X-Amz-Security-Token", awsCredentials.GetCredentials().Token);
             iamRequest.Headers.Add("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
-            try
-            {
-                // Use AWS utility to sign our request
-                new AWS4Signer().Sign(iamRequest, amazonSecurityTokenServiceConfig, new RequestMetrics(), awsCredentials.GetCredentials().AccessKey, awsCredentials.GetCredentials().SecretKey);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine($"Failed to sign IAM request: ", e.Message);
-            }
-
+            new AWS4Signer().Sign(iamRequest, amazonSecurityTokenServiceConfig, new RequestMetrics(), awsCredentials.GetCredentials().AccessKey, awsCredentials.GetCredentials().SecretKey);
             var iamSTSRequestHeaders = iamRequest.Headers;
 
             // Convert headers to Base64 encoded version
@@ -80,15 +71,7 @@ namespace Examples
 
             // We can retrieve the secret from the VaultClient object
             Secret<SecretData> kv2Secret = null;
-            try
-            {   
-                kv2Secret = vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "/creds").Result;
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine($"An error occurred while retreiving secret: ", e.Message); 
-                return string.Empty;
-            }
+            kv2Secret = vaultClient.V1.Secrets.KeyValue.V2.ReadSecretAsync(path: "/creds").Result;
             
             var password = kv2Secret.Data.Data["password"];
             
