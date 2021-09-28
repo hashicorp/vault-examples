@@ -12,7 +12,7 @@ namespace Examples
     public class ApproleAuthExample
     {
         /// <summary>
-        /// Fetches a key-vaule secret (kv-v2) after authenticating to Vault via AppRole authentication
+        /// Fetches a key-value secret (kv-v2) after authenticating to Vault via AppRole authentication
         /// </summary>
         public string GetSecretWithAppRole()
         {
@@ -27,14 +27,14 @@ namespace Examples
             string wrappingToken = File.ReadAllText("../../../path/to/wrapping-token"); // placed here by a trusted orchestrator
 
             // We need to create two VaultClient objects for authenticating via AppRole. The first is for
-            // using the unwrap utility. We need to initalize the client with the wrapping token.
+            // using the unwrap utility. We need to initialize the client with the wrapping token.
             IAuthMethodInfo wrappedTokenAuthMethod = new TokenAuthMethodInfo(wrappingToken);
             var wrappedVaultClientSettings = new VaultClientSettings(vaultAddr, wrappedTokenAuthMethod);
 
             IVaultClient wrappedVaultClient = new VaultClient(wrappedVaultClientSettings);
 
             // We pass null here instead of the wrapping token to avoid depleting its single usage
-            // given that we already initalized our client with the wrapping token
+            // given that we already initialized our client with the wrapping token
             Secret<Dictionary<string, object>> secretIdData =  wrappedVaultClient.V1.System
                 .UnwrapWrappedResponseDataAsync<Dictionary<string, object>>(null).Result; 
 
@@ -46,7 +46,7 @@ namespace Examples
 
             IVaultClient vaultClient = new VaultClient(vaultClientSettings);
 
-            // We can retreive the secret from there
+            // We can retrieve the secret from VaultClient
             Secret<SecretData> kv2Secret = null;
             try
             {   

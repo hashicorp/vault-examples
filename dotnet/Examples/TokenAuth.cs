@@ -12,7 +12,7 @@ namespace Examples
     public class TokenAuthExample
     {
         /// <summary>
-        /// Fetches a key-vaule secret (kv-v2) after authenticating to Vault via Token authentication 
+        /// Fetches a key-value secret (kv-v2) after authenticating to Vault via Token authentication 
         /// </summary>
         public string GetSecretWithToken()
         {
@@ -29,7 +29,7 @@ namespace Examples
             var vaultClientSettings = new VaultClientSettings(vaultAddr, authMethod);
             IVaultClient vaultClient = new VaultClient(vaultClientSettings);
 
-            // We can retreive the secret from the VaultClient object
+            // We can retrieve the secret from the VaultClient object
             Secret<SecretData> kv2Secret = null;
             try
             {   

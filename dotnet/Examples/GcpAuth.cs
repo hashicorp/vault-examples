@@ -18,14 +18,14 @@ namespace Examples
     public class GCPAuthExample 
     {
         /// <summary>
-        /// Fetches a key-vaule secret (kv-v2) after authenticating to Vault via GCP IAM,
+        /// Fetches a key-value secret (kv-v2) after authenticating to Vault via GCP IAM,
         /// one of two auth methods used to authenticate with GCP (the other is GCE auth).
         ///
-        /// A role must first be created in Vault vound to the IAM user's service account you wish to authenticate with, like so:
+        /// A role must first be created in Vault bound to the IAM user's service account you wish to authenticate with, like so:
         ///     	type="iam" \
         ///     	policies="dev-policy" \
         ///     	bound_service_accounts="my-service@my-project.iam.gserviceaccount.com"
-        /// Your Vault instance must also be configued with GCP credentials to perform API calls to IAM, like so:
+        /// Your Vault instance must also be configured with GCP credentials to perform API calls to IAM, like so:
         ///     vault write auth/gcp/config credentials=@path/to/server/creds.json
         /// Learn more at https://www.vaultproject.io/docs/auth/gcp
         /// </summary>
@@ -47,7 +47,7 @@ namespace Examples
 
             IVaultClient vaultClient = new VaultClient(vaultClientSettings); 
 
-            // We can retreive the secret after creaing our VaultClient object
+            // We can retrieve the secret after creating our VaultClient object
             Secret<SecretData> kv2Secret = null;
             try
             {   

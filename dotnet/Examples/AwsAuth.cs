@@ -35,7 +35,7 @@ namespace Examples
 
             var amazonSecurityTokenServiceConfig = new AmazonSecurityTokenServiceConfig();
 
-            // Initalize BasicAWS Credentials w/ an acessKey and secretKey
+            // Initialize BasicAWS Credentials w/ an accessKey and secretKey
             Amazon.Runtime.AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey: Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID"), 
                                                                 secretKey: Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY"));
             
@@ -69,7 +69,7 @@ namespace Examples
 
             IVaultClient vaultClient = new VaultClient(vaultClientSettings);
 
-            // We can retreive the secret from the VaultClient object
+            // We can retrieve the secret from the VaultClient object
             Secret<SecretData> kv2Secret = null;
             try
             {   
