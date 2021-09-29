@@ -22,7 +22,7 @@ import (
 //  	token_reviewer_jwt=${TOKEN_REVIEW_JWT} \
 //      kubernetes_host=${KUBE_HOST} \
 //      kubernetes_ca_cert=@path/to/kube_ca_cert \
-//      issuer=
+//      issuer="kubernetes/serviceaccount"
 //
 // The "issuer" field only needs to be set when running Kubernetes version 1.21 or above:
 // https://www.vaultproject.io/docs/platform/k8s/csi#setting-issuer-for-kubernetes-authentication.
