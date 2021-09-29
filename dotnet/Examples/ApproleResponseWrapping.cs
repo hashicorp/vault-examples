@@ -41,9 +41,9 @@ namespace Examples
             // We need to create two VaultClient objects for authenticating via AppRole. The first is for
             // using the unwrap utility. We need to initialize the client with the wrapping token.
             IAuthMethodInfo wrappedTokenAuthMethod = new TokenAuthMethodInfo(wrappingToken);
-            var wrappedVaultClientSettings = new VaultClientSettings(vaultAddr, wrappedTokenAuthMethod);
+            var vaultClientSettingsForUnwrapping = new VaultClientSettings(vaultAddr, wrappedTokenAuthMethod);
 
-            IVaultClient vaultClientForUnwrapping = new VaultClient(wrappedVaultClientSettings);
+            IVaultClient vaultClientForUnwrapping = new VaultClient(vaultClientSettingsForUnwrapping);
 
             // We pass null here instead of the wrapping token to avoid depleting its single usage
             // given that we already initialized our client with the wrapping token
