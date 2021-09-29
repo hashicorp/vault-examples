@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-dotnet@v1.7.2
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
-          
+
       - name: Set up environment
         run: |
           ./setup.sh
@@ -29,9 +29,10 @@ jobs:
 
       - name: Build
         run: |
-          cd dotnet ExampleTests
+          cd dotnet/ExampleTests
           dotnet restore
           dotnet build
+
       - name: Run Tests
         run: |
           TOKEN=${VAULT_DEV_ROOT_TOKEN_ID} dotnet test
