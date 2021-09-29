@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+vault version
+
 ## general setup
 echo "Enabling kv-v2 secrets engine at /kv-v2"
 curl -X POST -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"type": "kv-v2"}' ${VAULT_ADDR}/v1/sys/mounts/kv-v2

@@ -17,7 +17,7 @@ jobs:
         curl https://releases.hashicorp.com/vault/1.8.3/vault_1.8.3_linux_amd64.zip -o $HOME/vault-bin/vault.zip
         unzip $HOME/vault-bin/vault.zip
         echo "$HOME/vault-bin" >> $GITHUB_PATH
-        vault server -dev
+        $HOME/vault-bin/vault server -dev
 
     - name: Install Go
       uses: actions/setup-go@v2
