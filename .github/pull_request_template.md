@@ -9,7 +9,7 @@ Fixes # (issue)
 Please delete options that are not relevant.
 
 - [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New example (non-breaking change which adds functionality)
+- [ ] New example (non-breaking change that adds a new code example)
 - [ ] Other (Please describe what type of change)
 
 # How Has This Been Tested?
