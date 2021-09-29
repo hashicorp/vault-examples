@@ -41,4 +41,5 @@ jobs:
 
       - name: Run Tests
         run: |
+          cd dotnet/ExampleTests
           TOKEN=${VAULT_DEV_ROOT_TOKEN_ID} dotnet test
