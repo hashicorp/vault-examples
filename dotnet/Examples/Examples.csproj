@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>library</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.Core" Version="3.7.3.5" />
+    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.55" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.55.0" />
+    <PackageReference Include="Google.Apis.Iam.v1" Version="1.55.0.2443" />
+    <PackageReference Include="Google.Apis.IAMCredentials.v1" Version="1.55.0.2416" />
+    <PackageReference Include="VaultSharp" Version="1.7.0" />
+  </ItemGroup>
+
+</Project>
