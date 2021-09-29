@@ -10,7 +10,7 @@ jobs:
       EXPECTED_SECRET_VALUE: Hashi123
     strategy:
       matrix:
-        dotnet-version: ['3.1.x', '5.0.x' ]
+        dotnet-version: ['3.1.x']
     steps:
       - uses: actions/checkout@v2
       
@@ -27,12 +27,6 @@ jobs:
           ./setup.sh
           echo "APPROLE_ROLE_ID=$(curl -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" ${VAULT_ADDR}/v1/auth/approle/role/my-role/role-id | jq -r .data.role_id)" >> $GITHUB_ENV
 
-      - name: Build Examples
-        run: |
-          cd dotnet/Examples
-          dotnet restore
-          dotnet build
-      
       - name: Build Tests
         run: |
           cd dotnet/ExampleTests
