@@ -35,7 +35,7 @@ jobs:
       
       - name: Build Tests
         run: |
-          cd ../ExampleTests
+          cd dotnet/ExampleTests
           dotnet restore
           dotnet build
 
