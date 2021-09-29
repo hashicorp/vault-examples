@@ -1,4 +1,4 @@
 vault/
 .DS_Store
 go/path/*
-local-testing.sh
+local-testing*

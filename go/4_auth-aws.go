@@ -45,7 +45,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
 	params["role"] = "dev-role-iam" // the name of the role in Vault that was created with this IAM principal ARN bound to it
 
 	// log in to Vault's AWS auth method
-	resp, err := client.Logical().Write("auth/aws/login", params)
+	resp, err := client.Logical().Write("auth/aws/login", params) // confirm with your Vault administrator that "aws" is the correct mount name
 	if err != nil {
 		return "", fmt.Errorf("unable to log in with AWS IAM auth: %w", err)
 	}

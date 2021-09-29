@@ -1,6 +1,6 @@
 # Vault Examples
 
-A collection of copy-pastable code example snippets demonstrating the various ways to use the [HashiCorp Vault](https://github.com/hashicorp/vault) client libraries to authenticate and retrieve secrets.
+A collection of copy-pastable code example snippets demonstrating the various ways to use the [HashiCorp Vault](https://github.com/hashicorp/vault) client libraries to authenticate and retrieve secrets. More examples and languages on the way!
 
 ## How To Use 
 
