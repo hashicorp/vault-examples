@@ -99,3 +99,16 @@ func TestGetSecretWithGCPAuthIAM(t *testing.T) {
 		t.Fatalf("Expected %s, but got %s", expected, value)
 	}
 }
+
+func TestGetSecretWithKubernetesAuth(t *testing.T) {
+	if os.Getenv("LOCAL_TESTING") == "" {
+		t.Skip("skipping test in CI for now")
+	}
+	value, err := getSecretWithKubernetesAuth()
+	if err != nil {
+		t.Fatalf("Failed to get secret using Kubernetes service account: %v", err)
+	}
+	if value != expected {
+		t.Fatalf("Expected %s, but got %s", expected, value)
+	}
+}
