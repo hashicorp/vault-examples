@@ -21,7 +21,7 @@ func getSecret() (string, error) {
 
 	// WARNING: Storing any long-lived token with secret access in an environment variable poses a security risk.
 	// Additionally, root tokens should never be used in production or against Vault installations containing real secrets.
-	// See approle-with-response-wrapping.go for an example of how to use wrapping tokens for greater security.
+	// See the files starting in auth-* for examples of how to securely log in to Vault using various auth methods.
 	client.SetToken(os.Getenv("TOKEN")) // If this line is omitted, Vault will use whatever the env var VAULT_TOKEN is set to.
 
 	secret, err := client.Logical().Read("kv-v2/data/creds")

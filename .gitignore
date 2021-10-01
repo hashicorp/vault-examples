@@ -1,4 +1,9 @@
 vault/
 .DS_Store
 go/path/*
-local-testing.sh
+local-testing*
+dotnet/ExampleTests/path/*
+
+[Bb]in/
+[Oo]bj/
+[Tt]estResults/

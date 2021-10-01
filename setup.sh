@@ -12,6 +12,17 @@ curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"policy":"path \
 echo "Creating secret"
 curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"data": {"password": "Hashi123"}}' ${VAULT_ADDR}/v1/kv-v2/data/creds
 
+## USERPASS
+echo "Enabling userpass auth"
+curl -X POST -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"type": "userpass"}' ${VAULT_ADDR}/v1/sys/auth/userpass
+
+echo "Creating user with dev-policy for userpass auth method"
+curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"password":"my-password", "policies":"dev-policy"}' ${VAULT_ADDR}/v1/auth/userpass/users/my-user
+
+echo "Set token TTLs for all tokens created by userpass mount"
+# This is a ridiculously small max TTL only to get the tests to end the LifetimeWatcher faster and not actually use the large Increment value proposed by the code sample.
+curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"default_lease_ttl":"3s","max_lease_ttl":"5s"}' ${VAULT_ADDR}/v1/sys/auth/userpass/tune
+
 ## APPROLE
 echo "Enabling approle auth"
 curl -X POST -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"type": "approle"}' ${VAULT_ADDR}/v1/sys/auth/approle
@@ -25,13 +36,8 @@ mkdir -p go/path/to
 echo "Generating wrapping token"
 curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Wrap-Ttl: 5m0s" -d "null" ${VAULT_ADDR}/v1/auth/approle/role/my-role/secret-id | jq -r .wrap_info.token > go/path/to/wrapping-token
 
-## AWS
-echo "Enabling AWS auth"
-curl -X POST -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"type": "aws"}' ${VAULT_ADDR}/v1/sys/auth/aws
+echo "Creating path for dotnet wrapping token"
+mkdir -p dotnet/ExampleTests/path/to
 
-echo "Creating role with dev-policy for AWS auth method"
-curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Request: true" -d "{\"token_policies\":\"dev-policy\", \"auth_type\":\"iam\", \"bound_iam_principal_arn\":\"arn:aws:iam::${AWS_ACCOUNT_ID}:role/${AWS_ROLE_NAME}\", \"resolve_aws_unique_ids\":\"false\", \"ttl\":\"24h\"}" ${VAULT_ADDR}/v1/auth/aws/role/dev-role-iam
-
-## USERPASS
-echo "Enabling userpass auth"
-curl -X POST -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -d '{"type": "userpass"}' ${VAULT_ADDR}/v1/sys/auth/userpass
+echo "Generating wrapping token for dotnet tests"
+curl -X PUT -H "X-Vault-Token: ${VAULT_DEV_ROOT_TOKEN_ID}" -H "X-Vault-Wrap-Ttl: 5m0s" -d "null" ${VAULT_ADDR}/v1/auth/approle/role/my-role/secret-id | jq -r .wrap_info.token > dotnet/ExampleTests/path/to/wrapping-token

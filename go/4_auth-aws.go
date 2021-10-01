@@ -10,7 +10,7 @@ import (
 // Fetches a key-value secret (kv-v2) after authenticating to Vault via AWS IAM,
 // one of two auth methods used to authenticate with AWS (the other is EC2 auth).
 // A role must first be created in Vault bound to the IAM ARN you wish to authenticate with, like so:
-// vault write auth/aws/role/dev-role-iam \
+// 	vault write auth/aws/role/dev-role-iam \
 //     auth_type=iam \
 //     bound_iam_principal_arn="arn:aws:iam::AWS-ACCOUNT-NUMBER:role/AWS-IAM-ROLE-NAME" \
 //     ttl=24h
@@ -26,6 +26,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
 	// "auth" will be the specific auth package chosen by the user, like vault/auth/aws or vault/auth/gcp (a new set of modules)
 	// if their desired auth provider does not have a corresponding auth package, they will need to write to that auth method's /login endpoint directly
 	awsAuth, err := auth.NewAWSAuth(
+		"dev-role-iam",
 		auth.WithCredentialsFile("path/to/creds/file"), // if you don't pass any LoginOptions here, it will default to looking for creds in env vars
 	)
 	if err != nil {
@@ -40,6 +41,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
 		return "", fmt.Errorf("no auth info was returned after login")
 	}
 
+	// get secret
 	secret, err := client.Logical().Read("kv-v2/data/creds")
 	if err != nil {
 		return "", fmt.Errorf("unable to read secret: %w", err)
