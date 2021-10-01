@@ -25,8 +25,8 @@ import (
 //      kubernetes_ca_cert=@path/to/kube_ca_cert \
 //      issuer="kubernetes/serviceaccount"
 //
-// The "issuer" field only needs to be set when running Kubernetes version 1.21 or above:
-// https://www.vaultproject.io/docs/platform/k8s/csi#setting-issuer-for-kubernetes-authentication.
+// The "issuer" field is normally only required when running Kubernetes 1.21 or above, and may differ from the default value above:
+// https://www.vaultproject.io/docs/auth/kubernetes#discovering-the-service-account-issuer.
 //
 // Finally, make sure to create a role in Vault bound to your pod's service account:
 //
@@ -36,8 +36,6 @@ import (
 //		bound_service_account_namespaces="default"
 func getSecretWithKubernetesAuth() (string, error) {
 	// If set, the VAULT_ADDR environment variable will be the address that your pod uses to communicate with Vault.
-	// For an application running in Kubernetes accessing a Vault server outside of Kubernetes, you will need to set VAULT_ADDR in your pod spec to
-	// point at your Kubernetes cluster's gateway address. See this tutorial for more information: https://learn.hashicorp.com/tutorials/vault/kubernetes-external-vault
 	config := vault.DefaultConfig() // modify for more granular configuration
 
 	client, err := vault.NewClient(config)
