@@ -47,7 +47,7 @@ func getSecretWithAppRole() (string, error) {
 		"role_id":   roleID,
 		"secret_id": secretID,
 	}
-	resp, err := client.Logical().Write("auth/approle/login", params)
+	resp, err := client.Logical().Write("auth/approle/login", params) // confirm with your Vault administrator that "approle" is the correct mount name
 	if err != nil {
 		return "", fmt.Errorf("unable to log in with approle: %w", err)
 	}

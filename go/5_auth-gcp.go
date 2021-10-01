@@ -49,7 +49,7 @@ func getSecretWithGCPAuthIAM() (string, error) {
 
 	// Environment variable GOOGLE_APPLICATION_CREDENTIALS pointing to the path to a valid credentials JSON must be set,
 	// or Vault will fall back to Google's default instance credentials
-	resp, err := client.Logical().Write("auth/gcp/login", params)
+	resp, err := client.Logical().Write("auth/gcp/login", params) // confirm with your Vault administrator that "gcp" is the correct mount name
 	if err != nil {
 		return "", fmt.Errorf("unable to log in with GCP IAM auth: %w", err)
 	}
