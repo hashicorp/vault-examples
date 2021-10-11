@@ -19,7 +19,7 @@ namespace Examples
         /// This example assumes you have a configured Azure AD Application. 
         /// Learn more about Azure authentication prerequisites: https://www.vaultproject.io/docs/auth/azure
         ///
-        /// A role must first be created in Vault bound to the resource groups and subscriptions you wish to have access:
+        /// A role must first be created in Vault bound to the resource groups and subscription ids:
         /// 	vault write auth/azure/role/dev-role \
         ///     policies="dev-policy"
         ///     bound_subscription_ids=$AZURE_SUBSCRIPTION_ID \
@@ -61,7 +61,7 @@ namespace Examples
         /// </summary>
         private string GetJWT()
         {
-            // Build request to acquire managed identities for Azure resources token
+            // Build request to query ARM for an access token
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/");
             request.Headers["Metadata"] = "true";
             request.Method = "GET";
@@ -69,10 +69,9 @@ namespace Examples
             string results;
             try
             {
-                // Call /token endpoint
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
-                // Pipe response Stream to a StreamReader, and extract access token
+                // Pipe response Stream to a StreamReader and extract access token
                 StreamReader streamResponse = new StreamReader(response.GetResponseStream()); 
                 string stringResponse = streamResponse.ReadToEnd();
                 var resultsDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(stringResponse);
