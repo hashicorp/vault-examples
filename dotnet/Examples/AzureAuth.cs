@@ -14,10 +14,17 @@ namespace Examples
 {
     public class AzureAuthExample 
     {
-        static readonly HttpClient client = new HttpClient();
-
         /// <summary> 
-        /// 
+        /// Fetches a key-value secret (kv-v2) after authenticating to Vault via Azure authentication.
+        /// This example assumes you have a configured Azure AD Application. 
+        /// Learn more about Azure authentication prerequisites: https://www.vaultproject.io/docs/auth/azure
+        ///
+        /// A role must first be created in Vault bound to the resource groups and subscriptions you wish to have access:
+        /// 	vault write auth/azure/role/dev-role \
+        ///     policies="dev-policy"
+        ///     bound_subscription_ids=$AZURE_SUBSCRIPTION_ID \
+        ///     bound_resource_groups=test-rg \ 
+        ///     ttl=24h
         /// </summary>
         public string GetSecretWithAzureAuth()
         {
