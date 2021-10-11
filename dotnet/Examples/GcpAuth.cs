@@ -22,6 +22,7 @@ namespace Examples
         /// one of two auth methods used to authenticate with GCP (the other is GCE auth).
         ///
         /// A role must first be created in Vault bound to the IAM user's service account you wish to authenticate with, like so:
+        // 	vault write auth/gcp/role/dev-role-iam \
         ///     	type="iam" \
         ///     	policies="dev-policy" \
         ///     	bound_service_accounts="my-service@my-project.iam.gserviceaccount.com"
