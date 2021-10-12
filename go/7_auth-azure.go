@@ -27,7 +27,8 @@ func getSecretWithAzureAuth() (string, error) {
 		return "", fmt.Errorf("unable to initialize Vault client: %w", err)
 	}
 	
-	// azure client
+	// get JWT
+	jwtResp, err := getJWT()
 
 	// get secret
 	secret, err := client.Logical().Read("kv-v2/data/creds")
