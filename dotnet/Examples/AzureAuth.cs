@@ -21,6 +21,9 @@ namespace Examples
             public string subscriptionId { get; set; }
         }
 
+        const string MetadataEndPoint = "http://169.254.169.254/metadata/instance?api-version=2017-08-01";
+        const string AccessTokenEndPoint = "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/";
+
         /// <summary> 
         /// Fetches a key-value secret (kv-v2) after authenticating to Vault via Azure authentication.
         /// This example assumes you have a configured Azure AD Application. 
@@ -69,7 +72,7 @@ namespace Examples
         /// </summary>
         private InstanceMetadata GetMetadata()
         {
-            HttpWebRequest metadataRequest = (HttpWebRequest)WebRequest.Create("http://169.254.169.254/metadata/instance?api-version=2017-08-01");
+            HttpWebRequest metadataRequest = (HttpWebRequest)WebRequest.Create(MetadataEndPoint);
             metadataRequest.Headers["Metadata"] = "true";
             metadataRequest.Method = "GET";
 
@@ -87,7 +90,7 @@ namespace Examples
         /// </summary>
         private string GetJWT()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(AccessTokenEndPoint);
             request.Headers["Metadata"] = "true";
             request.Method = "GET";
 
