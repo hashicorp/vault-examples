@@ -19,11 +19,15 @@ type responseJson struct {
 	TokenType string `json:"token_type"`
   }
 
-  type metadataJson struct {
-	  VirtualMachineName string `json:"name"`
-	  SubscriptionId string `json:"subsscriptionId"`
-	  ResourceGroupName string `json:"resourceGroupName"`
-  }
+type metadataJson struct {
+	Compute computeJson `json:"compute"`
+}
+
+type computeJson struct {
+	VirtualMachineName string `json:"name"`
+	SubscriptionId string `json:"subscriptionId"`
+	ResourceGroupName string `json:"resourceGroupName"`
+}
 
 func getSecretWithAzureAuth() (string, error) {
 	config := vault.DefaultConfig() // modify for more granular configuration
@@ -33,19 +37,31 @@ func getSecretWithAzureAuth() (string, error) {
 		return "", fmt.Errorf("unable to initialize Vault client: %w", err)
 	}
 	
-	// get JWT
+	// Get AccessToken
 	jwtResp, err := getJWT()
+	if err != nil {
+		return "", fmt.Errorf("unable to get access token: %w", err)
+	}
 
-		// log in to Vault's GCP auth method with signed JWT token
+	// Get metadata for Azure instance
+	metadataRespJson, err := getMetadata()
+	if err != nil {
+		return "", fmt.Errorf("unable to get instance metadata: %w", err)
+	}
+
+	// log in to Vault's GCP auth method with signed JWT token
 	params := map[string]interface{}{
-			"role": "dev-role-iam", // the name of the role in Vault that was created with this IAM bound to it
+			"role": "dev-role-azure", // the name of the role in Vault that was 
 			"jwt":  jwtResp,
+			"vm_name" : metadataRespJson.Compute.VirtualMachineName,
+			"subscription_id" : metadataRespJson.Compute.SubscriptionId,
+			"resource_group_name" : metadataRespJson.Compute.ResourceGroupName, 
 	}
 
 	// log in to Vault's Azure auth method
-	resp, err := client.Logical().Write("auth/azure/login", params) // confirm with your Vault administrator that "aws" is the correct mount name
+	resp, err := client.Logical().Write("auth/azure/login", params) // confirm with your Vault administrator that "azure" is the correct mount name
 	if err != nil {
-		return "", fmt.Errorf("unable to log in with AWS IAM auth: %w", err)
+		return "", fmt.Errorf("unable to log in with Azure auth: %w", err)
 	}
 	if resp == nil || resp.Auth == nil || resp.Auth.ClientToken == "" {
 		return "", fmt.Errorf("login response did not return client token")
@@ -83,12 +99,10 @@ func getMetadata() (metadataJson, error) {
 	}
 
 	msi_parameters := msi_endpoint.Query()
-	msi_parameters.Add("resource", "https://management.azure.com/")
 	msi_endpoint.RawQuery = msi_parameters.Encode()
 	req, err := http.NewRequest("GET", msi_endpoint.String(), nil)
 	if err != nil {
-		fmt.Println("Error creating HTTP request: ", err)
-		return metadataJson{}, err
+		return metadataJson{}, fmt.Errorf("Error creating HTTP Request: %w", err)
 	}
 	req.Header.Add("Metadata", "true")
 
@@ -97,26 +111,24 @@ func getMetadata() (metadataJson, error) {
     resp, err := client.Do(req) 
     if err != nil{
       fmt.Println("Error calling token endpoint: ", err)
-      return metadataJson{}, err
+      return metadataJson{}, fmt.Errorf("Error calling token endpoint: %w", err)
     }
 
     // Pull out response body
     responseBytes,err := ioutil.ReadAll(resp.Body)
     defer resp.Body.Close()
     if err != nil {
-      fmt.Println("Error reading response body : ", err)
-      return metadataJson{}, err
+      return metadataJson{}, fmt.Errorf("Error reading response body: %w", err)
     }
 
-    // Unmarshall response body into struct
-	var r responseJson
+    // Unmarshall response body into metadata struct
+	var r metadataJson
     err = json.Unmarshal(responseBytes, &r)
     if err != nil {
-      fmt.Println("Error unmarshalling the response:", err)
-      return metadataJson{}, err
+      return metadataJson{}, fmt.Errorf("Error unmarshalling the response: %w", err)
     }
 
-	return metadataJson{}, nil	
+	return r, nil	
 }
 
 func getJWT() (string, error) {
@@ -125,7 +137,7 @@ func getJWT() (string, error) {
     var msi_endpoint *url.URL
     msi_endpoint, err := url.Parse("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01")
     if err != nil {
-      fmt.Println("Error creating URL: ", err)
+      fmt.Errorf("Error creating URL: %w", err)
       return "", err
     }
 
