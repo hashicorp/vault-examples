@@ -29,6 +29,16 @@ type computeJson struct {
 	ResourceGroupName string `json:"resourceGroupName"`
 }
 
+// Fetches a key-value secret (kv-v2) after authenticating to Vault via Azure authentication.
+// This example assumes you have a configured Azure AD Application. 
+// Learn more about Azure authentication prerequisites: https://www.vaultproject.io/docs/auth/azure
+//
+// A role must first be created in Vault bound to the resource groups and subscription ids:
+// 	vault write auth/azure/role/dev-role \
+//     policies="dev-policy"
+//     bound_subscription_ids=$AZURE_SUBSCRIPTION_ID \
+//     bound_resource_groups=test-rg \ 
+//     ttl=24h
 func getSecretWithAzureAuth() (string, error) {
 	config := vault.DefaultConfig() // modify for more granular configuration
 
@@ -49,7 +59,7 @@ func getSecretWithAzureAuth() (string, error) {
 		return "", fmt.Errorf("unable to get instance metadata: %w", err)
 	}
 
-	// log in to Vault's GCP auth method with signed JWT token
+	// log in to Vault's  auth method with signed JWT token
 	params := map[string]interface{}{
 			"role": "dev-role-azure", // the name of the role in Vault that was 
 			"jwt":  jwtResp,
@@ -89,24 +99,24 @@ func getSecretWithAzureAuth() (string, error) {
 	return value, nil
 }
 
+// Retrieve instance metadata from Azure 
 func getMetadata() (metadataJson, error) {
 
-	var msi_endpoint *url.URL
-	msi_endpoint, err := url.Parse("http://169.254.169.254/metadata/instance?api-version=2017-08-01")
+	var metadata_endpoint *url.URL
+	metadata_endpoint, err := url.Parse("http://169.254.169.254/metadata/instance?api-version=2017-08-01")
 	if err != nil {
   		fmt.Println("Error creating URL: ", err)
   		return metadataJson{}, err
 	}
 
-	msi_parameters := msi_endpoint.Query()
-	msi_endpoint.RawQuery = msi_parameters.Encode()
-	req, err := http.NewRequest("GET", msi_endpoint.String(), nil)
+	metadata_parameters := metadata_endpoint.Query()
+	metadata_endpoint.RawQuery = metadata_parameters.Encode()
+	req, err := http.NewRequest("GET", metadata_endpoint.String(), nil)
 	if err != nil {
 		return metadataJson{}, fmt.Errorf("Error creating HTTP Request: %w", err)
 	}
 	req.Header.Add("Metadata", "true")
 
-    // Call managed services for Azure resources token endpoint
     client := &http.Client{}
     resp, err := client.Do(req) 
     if err != nil{
@@ -114,14 +124,13 @@ func getMetadata() (metadataJson, error) {
       return metadataJson{}, fmt.Errorf("Error calling token endpoint: %w", err)
     }
 
-    // Pull out response body
     responseBytes,err := ioutil.ReadAll(resp.Body)
     defer resp.Body.Close()
     if err != nil {
       return metadataJson{}, fmt.Errorf("Error reading response body: %w", err)
     }
 
-    // Unmarshall response body into metadata struct
+	// Unmarshal response body into metadata struct 
 	var r metadataJson
     err = json.Unmarshal(responseBytes, &r)
     if err != nil {
@@ -131,23 +140,23 @@ func getMetadata() (metadataJson, error) {
 	return r, nil	
 }
 
+// Retrieves an access token from Azure MSI
 func getJWT() (string, error) {
-	
 	// Create HTTP request for a managed services for Azure resources token to access Azure Resource Manager
     var msi_endpoint *url.URL
     msi_endpoint, err := url.Parse("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01")
     if err != nil {
-      fmt.Errorf("Error creating URL: %w", err)
-      return "", err
+      return "", fmt.Errorf("Error creating URL: %w", err)
+
     }
 
 	msi_parameters := msi_endpoint.Query()
     msi_parameters.Add("resource", "https://management.azure.com/")
     msi_endpoint.RawQuery = msi_parameters.Encode()
-    req, err := http.NewRequest("GET", msi_endpoint.String(), nil)
+    
+	req, err := http.NewRequest("GET", msi_endpoint.String(), nil)
     if err != nil {
-      fmt.Println("Error creating HTTP request: ", err)
-      return "", err
+      return "", fmt.Errorf("Error creating HTTP request: %w", err)
     }
     req.Header.Add("Metadata", "true")
 
@@ -155,24 +164,20 @@ func getJWT() (string, error) {
     client := &http.Client{}
     resp, err := client.Do(req) 
     if err != nil{
-      fmt.Println("Error calling token endpoint: ", err)
-      return "", err
+      return "", fmt.Errorf("Error calling token endpoint: %w", err)
     }
 
-    // Pull out response body
     responseBytes,err := ioutil.ReadAll(resp.Body)
     defer resp.Body.Close()
     if err != nil {
-      fmt.Println("Error reading response body : ", err)
-      return "", err
+      return "", fmt.Errorf("Error reading response body: %w", err)
     }
 
     // Unmarshall response body into struct
 	var r responseJson
     err = json.Unmarshal(responseBytes, &r)
     if err != nil {
-      fmt.Println("Error unmarshalling the response:", err)
-      return "", err
+      return "", fmt.Errorf("Error unmarshalling the response: %w", err)
     }
 
 	return r.AccessToken, nil
