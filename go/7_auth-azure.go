@@ -102,16 +102,16 @@ func getSecretWithAzureAuth() (string, error) {
 
 // Retrieve instance metadata from Azure
 func getMetadata() (metadataJson, error) {
-	var metadata_endpoint *url.URL
-	metadata_endpoint, err := url.Parse("http://169.254.169.254/metadata/instance?api-version=2017-08-01")
+	var metadataEndpoint *url.URL
+	metadataEndpoint, err := url.Parse("http://169.254.169.254/metadata/instance?api-version=2017-08-01")
 	if err != nil {
 		fmt.Println("Error creating URL: ", err)
 		return metadataJson{}, err
 	}
 
-	metadata_parameters := metadata_endpoint.Query()
-	metadata_endpoint.RawQuery = metadata_parameters.Encode()
-	req, err := http.NewRequest("GET", metadata_endpoint.String(), nil)
+	metadataParameters := metadataEndpoint.Query()
+	metadataEndpoint.RawQuery = metadataParameters.Encode()
+	req, err := http.NewRequest("GET", metadataEndpoint.String(), nil)
 	if err != nil {
 		return metadataJson{}, fmt.Errorf("Error creating HTTP Request: %w", err)
 	}
@@ -144,17 +144,17 @@ func getMetadata() (metadataJson, error) {
 // Learn more here: https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-use-vm-token
 func getJWT() (string, error) {
 	// Create HTTP request for a managed services for Azure resources token to access Azure Resource Manager
-	var msi_endpoint *url.URL
-	msi_endpoint, err := url.Parse("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01")
+	var msiEndpoint *url.URL
+	msiEndpoint, err := url.Parse("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01")
 	if err != nil {
 		return "", fmt.Errorf("Error creating URL: %w", err)
 	}
 
-	msi_parameters := msi_endpoint.Query()
-	msi_parameters.Add("resource", "https://management.azure.com/")
-	msi_endpoint.RawQuery = msi_parameters.Encode()
+	msiParameters := msiEndpoint.Query()
+	msiParameters.Add("resource", "https://management.azure.com/")
+	msiEndpoint.RawQuery = msiParameters.Encode()
 
-	req, err := http.NewRequest("GET", msi_endpoint.String(), nil)
+	req, err := http.NewRequest("GET", msiEndpoint.String(), nil)
 	if err != nil {
 		return "", fmt.Errorf("Error creating HTTP request: %w", err)
 	}
@@ -173,7 +173,7 @@ func getJWT() (string, error) {
 		return "", fmt.Errorf("Error reading response body: %w", err)
 	}
 
-	// Unmarshall response body into struct
+	// Unmarshal response body into struct
 	var r responseJson
 	err = json.Unmarshal(responseBytes, &r)
 	if err != nil {
