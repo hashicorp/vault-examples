@@ -1,23 +1,24 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"encoding/json"
+
 	vault "github.com/hashicorp/vault/api"
 )
 
 type responseJson struct {
-	AccessToken string `json:"access_token"`
+	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
-	ExpiresIn string `json:"expires_in"`
-	ExpiresOn string `json:"expires_on"`
-	NotBefore string `json:"not_before"`
-	Resource string `json:"resource"`
-	TokenType string `json:"token_type"`
-  }
+	ExpiresIn    string `json:"expires_in"`
+	ExpiresOn    string `json:"expires_on"`
+	NotBefore    string `json:"not_before"`
+	Resource     string `json:"resource"`
+	TokenType    string `json:"token_type"`
+}
 
 type metadataJson struct {
 	Compute computeJson `json:"compute"`
@@ -25,19 +26,19 @@ type metadataJson struct {
 
 type computeJson struct {
 	VirtualMachineName string `json:"name"`
-	SubscriptionId string `json:"subscriptionId"`
-	ResourceGroupName string `json:"resourceGroupName"`
+	SubscriptionId     string `json:"subscriptionId"`
+	ResourceGroupName  string `json:"resourceGroupName"`
 }
 
 // Fetches a key-value secret (kv-v2) after authenticating to Vault via Azure authentication.
-// This example assumes you have a configured Azure AD Application. 
+// This example assumes you have a configured Azure AD Application.
 // Learn more about Azure authentication prerequisites: https://www.vaultproject.io/docs/auth/azure
 //
 // A role must first be created in Vault bound to the resource groups and subscription ids:
 // 	vault write auth/azure/role/dev-role \
 //     policies="dev-policy"
 //     bound_subscription_ids=$AZURE_SUBSCRIPTION_ID \
-//     bound_resource_groups=test-rg \ 
+//     bound_resource_groups=test-rg \
 //     ttl=24h
 func getSecretWithAzureAuth() (string, error) {
 	config := vault.DefaultConfig() // modify for more granular configuration
@@ -46,7 +47,7 @@ func getSecretWithAzureAuth() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("unable to initialize Vault client: %w", err)
 	}
-	
+
 	// Get AccessToken
 	jwtResp, err := getJWT()
 	if err != nil {
@@ -61,11 +62,11 @@ func getSecretWithAzureAuth() (string, error) {
 
 	// log in to Vault's  auth method with signed JWT token
 	params := map[string]interface{}{
-			"role": "dev-role-azure", // the name of the role in Vault that was 
-			"jwt":  jwtResp,
-			"vm_name" : metadataRespJson.Compute.VirtualMachineName,
-			"subscription_id" : metadataRespJson.Compute.SubscriptionId,
-			"resource_group_name" : metadataRespJson.Compute.ResourceGroupName, 
+		"role":                "dev-role-azure", // the name of the role in Vault w/ bound subscription id and resource group
+		"jwt":                 jwtResp,
+		"vm_name":             metadataRespJson.Compute.VirtualMachineName,
+		"subscription_id":     metadataRespJson.Compute.SubscriptionId,
+		"resource_group_name": metadataRespJson.Compute.ResourceGroupName,
 	}
 
 	// log in to Vault's Azure auth method
@@ -99,14 +100,13 @@ func getSecretWithAzureAuth() (string, error) {
 	return value, nil
 }
 
-// Retrieve instance metadata from Azure 
+// Retrieve instance metadata from Azure
 func getMetadata() (metadataJson, error) {
-
 	var metadata_endpoint *url.URL
 	metadata_endpoint, err := url.Parse("http://169.254.169.254/metadata/instance?api-version=2017-08-01")
 	if err != nil {
-  		fmt.Println("Error creating URL: ", err)
-  		return metadataJson{}, err
+		fmt.Println("Error creating URL: ", err)
+		return metadataJson{}, err
 	}
 
 	metadata_parameters := metadata_endpoint.Query()
@@ -117,68 +117,68 @@ func getMetadata() (metadataJson, error) {
 	}
 	req.Header.Add("Metadata", "true")
 
-    client := &http.Client{}
-    resp, err := client.Do(req) 
-    if err != nil{
-      fmt.Println("Error calling token endpoint: ", err)
-      return metadataJson{}, fmt.Errorf("Error calling token endpoint: %w", err)
-    }
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error calling token endpoint: ", err)
+		return metadataJson{}, fmt.Errorf("Error calling token endpoint: %w", err)
+	}
 
-    responseBytes,err := ioutil.ReadAll(resp.Body)
-    defer resp.Body.Close()
-    if err != nil {
-      return metadataJson{}, fmt.Errorf("Error reading response body: %w", err)
-    }
+	responseBytes, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	if err != nil {
+		return metadataJson{}, fmt.Errorf("Error reading response body: %w", err)
+	}
 
-	// Unmarshal response body into metadata struct 
+	// Unmarshal response body into metadata struct
 	var r metadataJson
-    err = json.Unmarshal(responseBytes, &r)
-    if err != nil {
-      return metadataJson{}, fmt.Errorf("Error unmarshalling the response: %w", err)
-    }
+	err = json.Unmarshal(responseBytes, &r)
+	if err != nil {
+		return metadataJson{}, fmt.Errorf("Error unmarshalling the response: %w", err)
+	}
 
-	return r, nil	
+	return r, nil
 }
 
 // Retrieves an access token from Azure MSI
+// Learn more here: https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-use-vm-token
 func getJWT() (string, error) {
 	// Create HTTP request for a managed services for Azure resources token to access Azure Resource Manager
-    var msi_endpoint *url.URL
-    msi_endpoint, err := url.Parse("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01")
-    if err != nil {
-      return "", fmt.Errorf("Error creating URL: %w", err)
-
-    }
+	var msi_endpoint *url.URL
+	msi_endpoint, err := url.Parse("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01")
+	if err != nil {
+		return "", fmt.Errorf("Error creating URL: %w", err)
+	}
 
 	msi_parameters := msi_endpoint.Query()
-    msi_parameters.Add("resource", "https://management.azure.com/")
-    msi_endpoint.RawQuery = msi_parameters.Encode()
-    
+	msi_parameters.Add("resource", "https://management.azure.com/")
+	msi_endpoint.RawQuery = msi_parameters.Encode()
+
 	req, err := http.NewRequest("GET", msi_endpoint.String(), nil)
-    if err != nil {
-      return "", fmt.Errorf("Error creating HTTP request: %w", err)
-    }
-    req.Header.Add("Metadata", "true")
+	if err != nil {
+		return "", fmt.Errorf("Error creating HTTP request: %w", err)
+	}
+	req.Header.Add("Metadata", "true")
 
-    // Call managed services for Azure resources token endpoint
-    client := &http.Client{}
-    resp, err := client.Do(req) 
-    if err != nil{
-      return "", fmt.Errorf("Error calling token endpoint: %w", err)
-    }
+	// Call managed services for Azure resources token endpoint
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("Error calling token endpoint: %w", err)
+	}
 
-    responseBytes,err := ioutil.ReadAll(resp.Body)
-    defer resp.Body.Close()
-    if err != nil {
-      return "", fmt.Errorf("Error reading response body: %w", err)
-    }
+	responseBytes, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	if err != nil {
+		return "", fmt.Errorf("Error reading response body: %w", err)
+	}
 
-    // Unmarshall response body into struct
+	// Unmarshall response body into struct
 	var r responseJson
-    err = json.Unmarshal(responseBytes, &r)
-    if err != nil {
-      return "", fmt.Errorf("Error unmarshalling the response: %w", err)
-    }
+	err = json.Unmarshal(responseBytes, &r)
+	if err != nil {
+		return "", fmt.Errorf("Error unmarshalling the response: %w", err)
+	}
 
 	return r.AccessToken, nil
 }
