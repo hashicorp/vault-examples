@@ -103,13 +103,14 @@ func getSecretWithAzureAuth() (string, error) {
 // Retrieve instance metadata from Azure
 func getMetadata() (metadataJson, error) {
 	var metadataEndpoint *url.URL
-	metadataEndpoint, err := url.Parse("http://169.254.169.254/metadata/instance?api-version=2017-08-01")
+	metadataEndpoint, err := url.Parse("http://169.254.169.254/metadata/instance")
 	if err != nil {
 		fmt.Println("Error creating URL: ", err)
 		return metadataJson{}, err
 	}
 
 	metadataParameters := metadataEndpoint.Query()
+	metadataParameters.Add("api-version", "2018-02-01")
 	metadataEndpoint.RawQuery = metadataParameters.Encode()
 	req, err := http.NewRequest("GET", metadataEndpoint.String(), nil)
 	if err != nil {
@@ -145,12 +146,13 @@ func getMetadata() (metadataJson, error) {
 func getJWT() (string, error) {
 	// Create HTTP request for a managed services for Azure resources token to access Azure Resource Manager
 	var msiEndpoint *url.URL
-	msiEndpoint, err := url.Parse("http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01")
+	msiEndpoint, err := url.Parse("http://169.254.169.254/metadata/identity/oauth2/token")
 	if err != nil {
 		return "", fmt.Errorf("Error creating URL: %w", err)
 	}
 
 	msiParameters := msiEndpoint.Query()
+	msiParameters.Add("api-version", "2018-02-01")
 	msiParameters.Add("resource", "https://management.azure.com/")
 	msiEndpoint.RawQuery = msiParameters.Encode()
 
