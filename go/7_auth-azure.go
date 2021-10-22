@@ -103,7 +103,6 @@ func getSecretWithAzureAuth() (string, error) {
 
 // Retrieve instance metadata from Azure
 func getMetadata() (metadataJson, error) {
-	var metadataEndpoint *url.URL
 	metadataEndpoint, err := url.Parse("http://169.254.169.254/metadata/instance")
 	if err != nil {
 		fmt.Println("Error creating URL: ", err)
@@ -146,7 +145,6 @@ func getMetadata() (metadataJson, error) {
 // Learn more here: https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-use-vm-token
 func getJWT() (string, error) {
 	// Create HTTP request for a managed services for Azure resources token to access Azure Resource Manager
-	var msiEndpoint *url.URL
 	msiEndpoint, err := url.Parse("http://169.254.169.254/metadata/identity/oauth2/token")
 	if err != nil {
 		return "", fmt.Errorf("Error creating URL: %w", err)
