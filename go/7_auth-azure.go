@@ -79,6 +79,7 @@ func getSecretWithAzureAuth() (string, error) {
 	}
 
 	client.SetToken(resp.Auth.ClientToken)
+
 	// get secret
 	secret, err := client.Logical().Read("kv-v2/data/creds")
 	if err != nil {
