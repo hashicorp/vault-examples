@@ -2,11 +2,15 @@ using System;
 using System.IO;
 using VaultSharp;
 using VaultSharp.V1.AuthMethods;
+using VaultSharp.V1.AuthMethods.Kubernetes;
+using VaultSharp.V1.Commons;
 
 namespace Examples
 {
     public class KubernetesAuthExample 
     {
+        const string DefaultTokenPath = "../../../path/to/wrapping-token";
+
         // Fetches a key-value secret (kv-v2) after authenticating to Vault with a Kubernetes service account.
         //
         // As the client, all we need to do is pass along the JWT token representing our application's Kubernetes Service Account in our login request to Vault.
@@ -48,7 +52,10 @@ namespace Examples
                 throw new System.ArgumentNullException("Kubernetes Role Name");
             }
 
-            var jwt = string.Empty;
+            // Get the path to wrapping token or fall back on default path
+            string pathToToken = !String.IsNullOrEmpty(Environment.GetEnvironmentVariable("SA_TOKEN_PATH")) ? Environment.GetEnvironmentVariable("SA_TOKEN_PATH") : DefaultTokenPath;
+            string jwt = File.ReadAllText(pathToToken); 
+
             IAuthMethodInfo authMethod = new KubernetesAuthMethodInfo(roleName, jwt);
             var vaultClientSettings = new VaultClientSettings(vaultAddr, authMethod);
 
