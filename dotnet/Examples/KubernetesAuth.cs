@@ -9,7 +9,7 @@ namespace Examples
 {
     public class KubernetesAuthExample 
     {
-        const string DefaultTokenPath = "../../../path/to/wrapping-token";
+        const string DefaultTokenPath = "path/to/service-account-token";
 
         // Fetches a key-value secret (kv-v2) after authenticating to Vault with a Kubernetes service account.
         //
