@@ -52,7 +52,7 @@ namespace Examples
                 throw new System.ArgumentNullException("Kubernetes Role Name");
             }
 
-            // Get the path to wrapping token or fall back on default path
+            // Get the path to service account token or fall back on default path
             string pathToToken = !String.IsNullOrEmpty(Environment.GetEnvironmentVariable("SA_TOKEN_PATH")) ? Environment.GetEnvironmentVariable("SA_TOKEN_PATH") : DefaultTokenPath;
             string jwt = File.ReadAllText(pathToToken); 
 
