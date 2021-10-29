@@ -46,10 +46,10 @@ namespace Examples
                 throw new System.ArgumentNullException("Vault Address");
             }
 
-            var roleName = Environment.GetEnvironmentVariable("K8S_ROLE");
+            var roleName = Environment.GetEnvironmentVariable("VAULT_ROLE");
             if(String.IsNullOrEmpty(roleName))
             {
-                throw new System.ArgumentNullException("Kubernetes Role Name");
+                throw new System.ArgumentNullException("Vault Role Name");
             }
 
             // Get the path to service account token or fall back on default path
