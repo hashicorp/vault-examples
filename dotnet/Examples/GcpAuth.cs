@@ -38,10 +38,10 @@ namespace Examples
                 throw new System.ArgumentNullException("Vault Address");
             }
 
-            var roleName = Environment.GetEnvironmentVariable("GCP_ROLE");
+            var roleName = Environment.GetEnvironmentVariable("VAULT_ROLE");
             if(String.IsNullOrEmpty(roleName))
             {
-                throw new System.ArgumentNullException("GCP Role Name");
+                throw new System.ArgumentNullException("Vault Role Name");
             }
 
             // Learn about authenticating to GCS with service account credentials at https://cloud.google.com/docs/authentication/production
