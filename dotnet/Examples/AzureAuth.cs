@@ -44,7 +44,7 @@ namespace Examples
                 throw new System.ArgumentNullException("Vault Address");
             }
 
-            string roleName = Environment.GetEnvironmentVariable("VAULT_ROLE_NAME");
+            string roleName = Environment.GetEnvironmentVariable("VAULT_ROLE");
             if(String.IsNullOrEmpty(roleName))
             {
                 throw new System.ArgumentNullException("Vault Role Name");
