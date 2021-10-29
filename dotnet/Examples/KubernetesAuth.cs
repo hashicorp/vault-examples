@@ -53,7 +53,7 @@ namespace Examples
             }
 
             // Get the path to service account token or fall back on default path
-            string pathToToken = !String.IsNullOrEmpty(Environment.GetEnvironmentVariable("SA_TOKEN_PATH")) ? Environment.GetEnvironmentVariable("SA_TOKEN_PATH") : DefaultTokenPath;
+            string pathToToken = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("SA_TOKEN_PATH")) ? DefaultTokenPath : Environment.GetEnvironmentVariable("SA_TOKEN_PATH");
             string jwt = File.ReadAllText(pathToToken); 
 
             IAuthMethodInfo authMethod = new KubernetesAuthMethodInfo(roleName, jwt);
