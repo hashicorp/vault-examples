@@ -35,7 +35,7 @@ func getSecret() (string, error) {
 	// If the desired auth provider does not yet have a corresponding auth
 	// package, you will need to write to that auth method's /login endpoint
 	// directly with client.Logical().Write.
-	userpassAuth, err := auth.NewUserpassAuth("my-user", &auth.Password{FromEnv: "SOME_ENV_VAR"})
+	userpassAuth, err := auth.NewUserpassAuth("my-user", &auth.Password{FromEnv: "PASSWORD_ENV_VAR"})
 	if err != nil {
 		return "", fmt.Errorf("unable to initialize userpass auth method: %w", err)
 	}

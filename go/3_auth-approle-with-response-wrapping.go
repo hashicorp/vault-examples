@@ -37,7 +37,7 @@ func getSecretWithAppRole() (string, error) {
 	appRoleAuth, err := auth.NewAppRoleAuth(
 		roleID,
 		secretID,
-		auth.WithWrappingToken(),
+		auth.WithWrappingToken(), // Only required if the secret ID is response-wrapped.
 	)
 	if err != nil {
 		return "", fmt.Errorf("unable to initialize AppRole auth method: %w", err)

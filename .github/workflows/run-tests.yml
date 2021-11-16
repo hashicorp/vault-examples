@@ -7,7 +7,7 @@ jobs:
       VAULT_ADDR: http://0.0.0.0:8200
       VAULT_DEV_ROOT_TOKEN_ID: testtoken
       EXPECTED_SECRET_VALUE: Hashi123
-      SOME_ENV_VAR: my-password
+      PASSWORD_ENV_VAR: my-password
     steps:
     - uses: actions/checkout@v2
 

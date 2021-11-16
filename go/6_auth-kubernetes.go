@@ -68,7 +68,7 @@ func getSecretWithKubernetesAuth() (string, error) {
 
 	authInfo, err := client.Auth().Login(context.TODO(), k8sAuth)
 	if err != nil {
-		return "", fmt.Errorf("unable to login to Kubernetes auth method: %w", err)
+		return "", fmt.Errorf("unable to log in with Kubernetes auth: %w", err)
 	}
 	if authInfo == nil {
 		return "", fmt.Errorf("no auth info was returned after login")

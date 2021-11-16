@@ -31,12 +31,19 @@ func getSecretWithGCPAuthIAM() (string, error) {
 		return "", fmt.Errorf("unable to initialize Vault client: %w", err)
 	}
 
-	svcAccountEmail := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", os.Getenv("GCP_SERVICE_ACCOUNT_NAME"), os.Getenv("GOOGLE_CLOUD_PROJECT"))
-
 	// For IAM-style auth, the environment variable GOOGLE_APPLICATION_CREDENTIALS
 	// must be set with the path to a valid credentials JSON file, otherwise
 	// Vault will fall back to Google's default instance credentials.
 	// Learn about authenticating to GCS with service account credentials at https://cloud.google.com/docs/authentication/production
+	if pathToCreds := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"); pathToCreds == "" {
+		fmt.Printf("WARNING: Environment variable GOOGLE_APPLICATION_CREDENTIALS was not set. IAM client for JWT signing and Vault server IAM client will both fall back to default instance credentials.\n")
+	}
+
+	svcAccountEmail := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", os.Getenv("GCP_SERVICE_ACCOUNT_NAME"), os.Getenv("GOOGLE_CLOUD_PROJECT"))
+
+	// We pass the auth.WithIAMAuth option to use the IAM-style authentication
+	// of the GCP auth backend. Otherwise, we default to using GCE-style
+	// authentication, which gets its credentials from the metadata server.
 	gcpAuth, err := auth.NewGCPAuth(
 		"dev-role-iam",
 		auth.WithIAMAuth(svcAccountEmail),
