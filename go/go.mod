@@ -21,6 +21,7 @@ require (
 	github.com/hashicorp/vault/api v1.3.0
 	github.com/hashicorp/vault/api/auth/approle v0.1.0
 	github.com/hashicorp/vault/api/auth/aws v0.1.0
+	github.com/hashicorp/vault/api/auth/azure v0.1.0
 	github.com/hashicorp/vault/api/auth/gcp v0.1.0
 	github.com/hashicorp/vault/api/auth/kubernetes v0.1.0
 	github.com/hashicorp/vault/api/auth/userpass v0.1.0
