@@ -26,4 +26,4 @@ jobs:
     - name: Run tests
       run: |
         cd go
-        TOKEN=${VAULT_DEV_ROOT_TOKEN_ID} go test -count=1
+        go test -count=1
