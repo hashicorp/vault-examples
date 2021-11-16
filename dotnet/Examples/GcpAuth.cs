@@ -22,6 +22,7 @@ namespace Examples
         /// one of two auth methods used to authenticate with GCP (the other is GCE auth).
         ///
         /// A role must first be created in Vault bound to the IAM user's service account you wish to authenticate with, like so:
+        // 	vault write auth/gcp/role/dev-role-iam \
         ///     	type="iam" \
         ///     	policies="dev-policy" \
         ///     	bound_service_accounts="my-service@my-project.iam.gserviceaccount.com"
@@ -37,10 +38,10 @@ namespace Examples
                 throw new System.ArgumentNullException("Vault Address");
             }
 
-            var roleName = Environment.GetEnvironmentVariable("GCP_ROLE");
+            var roleName = Environment.GetEnvironmentVariable("VAULT_ROLE");
             if(String.IsNullOrEmpty(roleName))
             {
-                throw new System.ArgumentNullException("GCP Role Name");
+                throw new System.ArgumentNullException("Vault Role Name");
             }
 
             // Learn about authenticating to GCS with service account credentials at https://cloud.google.com/docs/authentication/production

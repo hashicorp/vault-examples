@@ -36,10 +36,10 @@ namespace Examples
                 throw new System.ArgumentNullException("Vault Address");
             }
 
-            var roleName = Environment.GetEnvironmentVariable("AWS_ROLE_NAME");
+            var roleName = Environment.GetEnvironmentVariable("VAULT_ROLE");
             if(String.IsNullOrEmpty(roleName))
             {
-                throw new System.ArgumentNullException("AWS Role Name");
+                throw new System.ArgumentNullException("Vault Role Name");
             }
 
             var amazonSecurityTokenServiceConfig = new AmazonSecurityTokenServiceConfig();
