@@ -4,10 +4,10 @@ go/path/*
 go/go.mod
 go/go.sum
 go/examples_test.go
-local-testing*
-dotnet/ExampleTests/*
+local-testing/
 .vscode/
 
+dotnet/ExampleTests/
 [Bb]in/
 [Oo]bj/
 [Tt]estResults/
