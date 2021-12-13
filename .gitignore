@@ -1,6 +1,8 @@
 vault/
 .DS_Store
 go/path/*
+go/go.mod
+go/go.sum
 local-testing*
 dotnet/ExampleTests/path/*
 .vscode/
