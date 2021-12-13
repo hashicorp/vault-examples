@@ -66,6 +66,9 @@ func manageTokenLifecycle(client *vault.Client, token *vault.Secret) error {
 				log.Printf("Failed to renew token: %v. Re-attempting login.", err)
 				return nil
 			}
+			// This occurs once the token has reached max TTL.
+			// Learn about the difference between a token's TTL and its max TTL here:
+			// https://learn.hashicorp.com/tutorials/vault/tokens#ttl-and-max-ttl
 			log.Printf("Token can no longer be renewed. Re-attempting login.")
 			return nil
 

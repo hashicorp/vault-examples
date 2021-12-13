@@ -14,4 +14,4 @@ Please delete options that are not relevant.
 
 # How Has This Been Tested?
 
-Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. If applicable please update the CI Unit Tests.
+Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce.
