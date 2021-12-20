@@ -1,6 +1,6 @@
 # AppRole Authentication
 
-The code snippets in this directory are examples in various languages of how to authenticate an application to Vault with the [AppRole authentication method](TODO) in order to fetch a secret.
+The code snippets in this directory are examples in various languages of how to authenticate an application to Vault with the [AppRole authentication method](https://www.vaultproject.io/docs/auth/approle) in order to fetch a secret.
 
 The AppRole auth method is a great choice for those who wish to authenticate entirely using mechanisms included with Vault, rather than relying on an auth method which validates external identities from some other source, as with the AWS or Azure auth methods. This may make AppRole a good choice for users running their applications in an on-prem data center. 
 

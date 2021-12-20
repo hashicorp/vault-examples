@@ -11,13 +11,6 @@ import (
 // Fetches a key-value secret (kv-v2) after authenticating to Vault via Azure authentication.
 // This example assumes you have a configured Azure AD Application.
 // Learn more about Azure authentication prerequisites: https://www.vaultproject.io/docs/auth/azure
-//
-// A role must first be created in Vault bound to the resource groups and subscription ids:
-// 	vault write auth/azure/role/dev-role \
-//     policies="dev-policy"
-//     bound_subscription_ids=$AZURE_SUBSCRIPTION_ID \
-//     bound_resource_groups=test-rg \
-//     ttl=24h
 func getSecretWithAzureAuth() (string, error) {
 	config := vault.DefaultConfig() // modify for more granular configuration
 
