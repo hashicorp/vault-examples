@@ -10,7 +10,6 @@ import (
 
 // Fetches a key-value secret (kv-v2) after authenticating to Vault via Azure authentication.
 // This example assumes you have a configured Azure AD Application.
-// Learn more about Azure authentication prerequisites: https://www.vaultproject.io/docs/auth/azure
 func getSecretWithAzureAuth() (string, error) {
 	config := vault.DefaultConfig() // modify for more granular configuration
 
