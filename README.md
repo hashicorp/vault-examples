@@ -7,12 +7,12 @@ A collection of copy-pastable code example snippets demonstrating the various wa
 - Go
   - Uses official library [HashiCorp Vault](https://pkg.go.dev/github.com/hashicorp/vault/api)
   - Provided examples:
-    - Auth Methods ([AppRole](examples/auth-methods/approle/example.go), [AWS](examples/auth-methods/aws/example.go), [Azure](examples/auth-methods/azure/example.go), [GCP](examples/auth-methods/gcp/example.go), [Kubernetes](examples/auth-methods/kubernetes/example.go))
-    - [Token Renewal](examples/token-renewal/example.go)
+    - Auth Methods ([AppRole](examples/auth-methods/approle/go/example.go), [AWS](examples/auth-methods/aws/go/example.go), [Azure](examples/auth-methods/azure/go/example.go), [GCP](examples/auth-methods/gcp/go/example.go), [Kubernetes](examples/auth-methods/kubernetes/go/example.go))
+    - [Token Renewal](examples/token-renewal/go/example.go)
 - C#
   - Uses community-maintained library [VaultSharp](https://github.com/rajanadar/VaultSharp)
   - Provided examples:
-    - Auth Methods ([AppRole](examples/auth-methods/approle/Example.cs), [AWS](examples/auth-methods/aws/Example.cs), [Azure](examples/auth-methods/azure/Example.cs), [GCP](examples/auth-methods/gcp/Example.cs), [Kubernetes](examples/auth-methods/kubernetes/Example.cs))
+    - Auth Methods ([AppRole](examples/auth-methods/approle/dotnet/Example.cs), [AWS](examples/auth-methods/aws/dotnet/Example.cs), [Azure](examples/auth-methods/azure/dotnet/Example.cs), [GCP](examples/auth-methods/gcp/dotnet/Example.cs), [Kubernetes](examples/auth-methods/kubernetes/dotnet/Example.cs))
 
 ## How To Use
 
