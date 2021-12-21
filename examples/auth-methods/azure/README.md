@@ -8,7 +8,7 @@ The Azure auth method expects all login requests to contain a JWT signed by Azur
 
 After you've enabled the Azure auth method on your Vault instance, you will need to configure it to check against your application's App Registration in Azure.
 
-```
+```sh
 vault write auth/azure/config \
     tenant_id=MY-TENANT-ID \
     resource=https://management.azure.com/ \
@@ -23,7 +23,7 @@ The tenant ID, client ID, and client secret for your application are all values 
 A role must then be created in Vault bound to the specific Azure resources that you wish to allow logins from.
 For example:
 
-```
+```sh
 vault write auth/azure/role/dev-role \
     policies="dev-policy"
     bound_subscription_ids=$AZURE_SUBSCRIPTION_ID \

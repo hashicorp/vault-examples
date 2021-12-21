@@ -12,7 +12,7 @@ Service Account token to be able to communicate with the Kubernetes API so it ca
 
 The service account that will be performing that verification needs the ClusterRole `system:auth-delegator`.
 
-```
+```sh
 export TOKEN_REVIEW_JWT=$(kubectl get secret $TOKEN_REVIEWER_SECRET --output='go-template={{ .data.token }}' | base64 --decode)
 export KUBE_HOST=$(kubectl config view --raw --minify --flatten --output='jsonpath={.clusters[].cluster.server}')
 kubectl config view --raw --minify --flatten --output='jsonpath={.clusters[].cluster.certificate-authority-data}' | base64 --decode > path/to/kube_ca_cert
@@ -29,7 +29,7 @@ or above, and [may differ from the default value above](https://www.vaultproject
 
 Finally, make sure to create a role in Vault bound to your pod's service account:
 
-```
+```sh
 vault write auth/kubernetes/role/dev-role-k8s \
     policies="dev-policy" \
     bound_service_account_names="my-app" \

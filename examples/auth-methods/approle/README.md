@@ -6,7 +6,7 @@ The AppRole auth method is a great choice for those who wish to authenticate ent
 
 With AppRole, all you need to log in to Vault is a [role ID](https://www.vaultproject.io/docs/auth/approle#roleid) and a [secret ID](https://www.vaultproject.io/docs/auth/approle#secretid). The role ID is a unique identifier for an application, and the secret ID is a value that acts as a login credential (and should thus always be protected).
 
-Check out our Hello-Vault sample app ([Go](https://github.com/hashicorp/hello-vault-go), [C#](https://github.com/hashicorp/hello-vault-dotnet)) for a runnable example of how to use AppRole authentication.
+Check out our Hello-Vault sample app ([Go](https://github.com/hashicorp/hello-vault-go)) for a runnable example of how to use AppRole authentication.
 
 ## How do I protect the value of the secret ID?
 

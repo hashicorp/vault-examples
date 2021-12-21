@@ -79,7 +79,7 @@ func manageTokenLifecycle(client *vault.Client, token *vault.Secret) error {
 
 func login(client *vault.Client) (*vault.Secret, error) {
 	// WARNING: A plaintext password like this is obviously insecure.
-	// See the files starting in auth-* for full examples of how to securely
+	// See the files in the auth-methods directory for full examples of how to securely
 	// log in to Vault using various auth methods. This function is just
 	// demonstrating the basic idea that a *vault.Secret is returned by
 	// the login call.

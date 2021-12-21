@@ -9,14 +9,14 @@ There are two options for authenticating using GCP: [IAM auth](https://www.vault
 Your Vault instance must be configured with GCP credentials to
 perform API calls to IAM. For example:
 
-```
+```sh
 vault write auth/gcp/config credentials=@path/to/vault/server/creds.json
 ```
 
 For IAM auth, a role must first be created in Vault bound to the IAM user's service
 account you wish to authenticate with. For example:
 
-```
+```sh
 vault write auth/gcp/role/dev-role-iam \
     type="iam" \
     policies="dev-policy" \

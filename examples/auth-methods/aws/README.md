@@ -8,7 +8,7 @@ There are two options for authenticating using AWS: [IAM auth](https://www.vault
 
 A role must first be created in Vault, bound to certain constraints depending on whether you're using IAM auth or EC2 auth. For example, with IAM auth you can bind the role to a certain IAM principal ARN like so:
 
-```
+```sh
 vault write auth/aws/role/dev-role-iam \
     auth_type=iam \
     bound_iam_principal_arn="arn:aws:iam::AWS-ACCOUNT-NUMBER:role/AWS-IAM-ROLE-NAME" \

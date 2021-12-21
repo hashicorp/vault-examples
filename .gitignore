@@ -3,8 +3,8 @@ vault/
 *.mod
 *.sum
 *_test.go
-examples/auth-methods/*/path
-examples/token-renewal/path
+examples/auth-methods/*/go/path
+examples/token-renewal/go/path
 local-testing/
 .vscode/
 

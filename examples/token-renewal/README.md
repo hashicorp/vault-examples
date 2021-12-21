@@ -7,3 +7,5 @@ Before the TTL has been reached, you can renew the token as many times as you wa
 Currently, only the Go client library supports token renewal, using a struct called [LifetimeWatcher](https://pkg.go.dev/github.com/hashicorp/vault/api#LifetimeWatcher). More language examples will be added as token renewal capabilities are added to more client libraries.
 
 When doing token renewals, it is important to make sure that all cases are being handled: a) the token was successfully renewed, b) it was unable to be renewed because of an error or some configuration, or c) it has reached its max TTL and thus needs to fully log in again.
+
+See the sample app Hello-Vault ([Go](https://github.com/hashicorp/hello-vault-go)) for an out-of-the-box working demo that includes token renewal.
