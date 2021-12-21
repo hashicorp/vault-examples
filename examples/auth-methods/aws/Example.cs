@@ -21,12 +21,6 @@ namespace Examples
         /// <summary> 
         /// Fetches a key-value secret (kv-v2) after authenticating to Vault via AWS IAM,
         /// one of two auth methods used to authenticate with AWS (the other is EC2 auth).
-        /// A role must first be created in Vault bound to the IAM ARN you wish to authenticate with, like so:
-        /// 	vault write auth/aws/role/dev-role-iam \
-        ///     auth_type=iam \
-        ///     bound_iam_principal_arn="arn:aws:iam::AWS-ACCOUNT-NUMBER:role/AWS-IAM-ROLE-NAME" \
-        ///     ttl=24h
-        ///  Learn more about the available parameters at https://www.vaultproject.io/api/auth/aws#parameters-10
         /// </summary>
         public string GetSecretAWSAuthIAM()
         {

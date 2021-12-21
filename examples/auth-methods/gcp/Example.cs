@@ -20,15 +20,6 @@ namespace Examples
         /// <summary>
         /// Fetches a key-value secret (kv-v2) after authenticating to Vault via GCP IAM,
         /// one of two auth methods used to authenticate with GCP (the other is GCE auth).
-        ///
-        /// A role must first be created in Vault bound to the IAM user's service account you wish to authenticate with, like so:
-        // 	vault write auth/gcp/role/dev-role-iam \
-        ///     	type="iam" \
-        ///     	policies="dev-policy" \
-        ///     	bound_service_accounts="my-service@my-project.iam.gserviceaccount.com"
-        /// Your Vault instance must also be configured with GCP credentials to perform API calls to IAM, like so:
-        ///     vault write auth/gcp/config credentials=@path/to/server/creds.json
-        /// Learn more at https://www.vaultproject.io/docs/auth/gcp
         /// </summary>
         public string GetSecretGcp()
         {

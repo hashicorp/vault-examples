@@ -9,9 +9,7 @@ import (
 	auth "github.com/hashicorp/vault/api/auth/approle"
 )
 
-// Fetches a key-value secret (kv-v2) after authenticating via AppRole,
-// an auth method used by machines that are unable to use platform-based
-// authentication mechanisms like AWS Auth, Kubernetes Auth, etc.
+// Fetches a key-value secret (kv-v2) after authenticating via AppRole.
 func getSecretWithAppRole() (string, error) {
 	config := vault.DefaultConfig() // modify for more granular configuration
 
