@@ -14,7 +14,7 @@ vault write auth/azure/config \
     resource=https://management.azure.com/ \
     client_id=MY-CLIENT-ID \
     client_secret=MY-CLIENT-SECRET
-``` 
+```
 
 The tenant ID, client ID, and client secret for your application are all values you can retrieve from the App Registrations page in Azure.
 
