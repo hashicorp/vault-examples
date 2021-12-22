@@ -1,9 +1,10 @@
 vault/
 .DS_Store
-go/path/*
-go/go.mod
-go/go.sum
-go/examples_test.go
+*.mod
+*.sum
+*_test.go
+examples/auth-methods/*/go/path
+examples/token-renewal/go/path
 local-testing/
 .vscode/
 

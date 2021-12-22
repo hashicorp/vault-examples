@@ -67,8 +67,6 @@ func manageTokenLifecycle(client *vault.Client, token *vault.Secret) error {
 				return nil
 			}
 			// This occurs once the token has reached max TTL.
-			// Learn about the difference between a token's TTL and its max TTL here:
-			// https://learn.hashicorp.com/tutorials/vault/tokens#ttl-and-max-ttl
 			log.Printf("Token can no longer be renewed. Re-attempting login.")
 			return nil
 
@@ -81,7 +79,7 @@ func manageTokenLifecycle(client *vault.Client, token *vault.Secret) error {
 
 func login(client *vault.Client) (*vault.Secret, error) {
 	// WARNING: A plaintext password like this is obviously insecure.
-	// See the files starting in auth-* for full examples of how to securely
+	// See the files in the auth-methods directory for full examples of how to securely
 	// log in to Vault using various auth methods. This function is just
 	// demonstrating the basic idea that a *vault.Secret is returned by
 	// the login call.
