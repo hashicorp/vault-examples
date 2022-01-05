@@ -41,6 +41,7 @@ For an out-of-the-box runnable sample app, please see our Hello-Vault repos.
 Hello-Vault:
 
 - [Go](https://github.com/hashicorp/hello-vault-go)
+- [C#](https://github.com/hashicorp/hello-vault-dotnet)
 
 ## How To Contribute
 
