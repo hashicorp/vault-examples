@@ -5,7 +5,7 @@ using VaultSharp.V1.AuthMethods;
 using VaultSharp.V1.AuthMethods.Token;
 using VaultSharp.V1.Commons;
 
-// This is the full version of the code accompanying the Developer Quick Start.
+// This is the accompanying code for the Developer Quick Start.
 // WARNING: Using root tokens is insecure and should never be done in production!
 namespace DeveloperQuickstart
 {
