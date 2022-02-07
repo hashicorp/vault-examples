@@ -10,6 +10,7 @@ retrieve secrets.
   - Uses official library
     [HashiCorp Vault](https://pkg.go.dev/github.com/hashicorp/vault/api)
   - Provided examples:
+    - [Quick Start](examples/_quick-start/go/example.go) with Token Auth
     - Auth Methods ([AppRole](examples/auth-methods/approle/go/example.go),
       [AWS](examples/auth-methods/aws/go/example.go),
       [Azure](examples/auth-methods/azure/go/example.go),
@@ -20,11 +21,16 @@ retrieve secrets.
   - Uses community-maintained library
     [VaultSharp](https://github.com/rajanadar/VaultSharp)
   - Provided examples:
+    - [Quick Start](examples/_quick-start/dotnet/Example.cs) with Token Auth
     - Auth Methods ([AppRole](examples/auth-methods/approle/dotnet/Example.cs),
       [AWS](examples/auth-methods/aws/dotnet/Example.cs),
       [Azure](examples/auth-methods/azure/dotnet/Example.cs),
       [GCP](examples/auth-methods/gcp/dotnet/Example.cs),
       [Kubernetes](examples/auth-methods/kubernetes/dotnet/Example.cs))
+- Python
+  - Uses community-maintained library [HVAC](https://hvac.readthedocs.io/en/stable/overview.html)
+  - Provided examples:
+    - [Quick Start](examples/_quick-start/python/example.py) with Token Auth
 
 ## How To Use
 
