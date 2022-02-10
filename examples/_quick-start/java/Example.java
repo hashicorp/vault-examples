@@ -28,7 +28,8 @@ public class Example implements CommandLineRunner {
         vaultEndpoint.setScheme("http");
 
         // Authenticate
-        VaultTemplate vaultTemplate = new VaultTemplate(vaultEndpoint,
+        VaultTemplate vaultTemplate = new VaultTemplate(
+                vaultEndpoint,
                 new TokenAuthentication("dev-only-token"));
 
         // Write a secret
@@ -46,7 +47,10 @@ public class Example implements CommandLineRunner {
                 .opsForVersionedKeyValue("secret")
                 .get("my-secret-password");
 
-        String password = readResponse.getData().get("password").toString();
+        String password = "";
+        if (readResponse != null && readResponse.hasData()) {
+            password = (String) readResponse.getData().get("password");
+        }
 
         if (!password.equals("Hashi123")) {
             throw new Exception("Unexpected password");
