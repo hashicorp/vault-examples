@@ -31,6 +31,10 @@ retrieve secrets.
   - Uses community-maintained library [HVAC](https://hvac.readthedocs.io/en/stable/overview.html)
   - Provided examples:
     - [Quick Start](examples/_quick-start/python/example.py) with Token Auth
+- Java (Spring)
+  - Uses community-maintained library [spring-vault](https://spring.io/projects/spring-vault)
+  - Provided examples:
+    - [Quick Start](examples/_quick-start/java/Example.java) with Token Auth
 
 ## How To Use
 
