@@ -17,6 +17,10 @@ retrieve secrets.
       [GCP](examples/auth-methods/gcp/go/example.go),
       [Kubernetes](examples/auth-methods/kubernetes/go/example.go))
     - [Token Renewal](examples/token-renewal/go/example.go)
+- Ruby
+  - Uses official library [vault-ruby](https://github.com/hashicorp/vault-ruby)
+  - Provided examples:
+    - [Quick Start](examples/_quick-start/ruby/example.rb) with Token Auth
 - C#
   - Uses community-maintained library
     [VaultSharp](https://github.com/rajanadar/VaultSharp)
