@@ -41,7 +41,7 @@ func getSecretWithGCPAuthIAM() (string, error) {
 		return "", fmt.Errorf("unable to initialize GCP auth method: %w", err)
 	}
 
-	authInfo, err := client.Auth().Login(context.TODO(), gcpAuth)
+	authInfo, err := client.Auth().Login(context.Background(), gcpAuth)
 	if err != nil {
 		return "", fmt.Errorf("unable to login to GCP auth method: %w", err)
 	}
@@ -49,8 +49,8 @@ func getSecretWithGCPAuthIAM() (string, error) {
 		return "", fmt.Errorf("login response did not return client token")
 	}
 
-	// get secret
-	secret, err := client.KVv2("secret").Get(context.TODO(), "creds")
+	// get secret from the default mount path for KV v2 in dev mode, "secret"
+	secret, err := client.KVv2("secret").Get(context.Background(), "creds")
 	if err != nil {
 		return "", fmt.Errorf("unable to read secret: %w", err)
 	}

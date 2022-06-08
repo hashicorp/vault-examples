@@ -20,23 +20,23 @@ func main() {
 		log.Fatalf("unable to initialize Vault client: %v", err)
 	}
 
-	// Authentication
+	// Authenticate
 	client.SetToken("dev-only-token")
 
 	secretData := map[string]interface{}{
 		"password": "Hashi123",
 	}
 
-	// Writing a secret
-	_, err = client.KVv2("secret").Put(context.TODO(), "my-secret-password", secretData)
+	// Write a secret
+	_, err = client.KVv2("secret").Put(context.Background(), "my-secret-password", secretData)
 	if err != nil {
 		log.Fatalf("unable to write secret: %v", err)
 	}
 
 	fmt.Println("Secret written successfully.")
 
-	// Reading a secret
-	secret, err := client.KVv2("secret").Get(context.TODO(), "my-secret-password")
+	// Read a secret from the default mount path for KV v2 in dev mode, "secret"
+	secret, err := client.KVv2("secret").Get(context.Background(), "my-secret-password")
 	if err != nil {
 		log.Fatalf("unable to read secret: %v", err)
 	}

@@ -33,7 +33,7 @@ func getSecretWithKubernetesAuth() (string, error) {
 		return "", fmt.Errorf("unable to initialize Kubernetes auth method: %w", err)
 	}
 
-	authInfo, err := client.Auth().Login(context.TODO(), k8sAuth)
+	authInfo, err := client.Auth().Login(context.Background(), k8sAuth)
 	if err != nil {
 		return "", fmt.Errorf("unable to log in with Kubernetes auth: %w", err)
 	}
@@ -41,8 +41,8 @@ func getSecretWithKubernetesAuth() (string, error) {
 		return "", fmt.Errorf("no auth info was returned after login")
 	}
 
-	// get secret from Vault
-	secret, err := client.KVv2("secret").Get(context.TODO(), "creds")
+	// get secret from Vault, from the default mount path for KV v2 in dev mode, "secret"
+	secret, err := client.KVv2("secret").Get(context.Background(), "creds")
 	if err != nil {
 		return "", fmt.Errorf("unable to read secret: %w", err)
 	}

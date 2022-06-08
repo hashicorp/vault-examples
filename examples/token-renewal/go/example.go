@@ -88,7 +88,7 @@ func login(client *vault.Client) (*vault.Secret, error) {
 		return nil, fmt.Errorf("unable to initialize userpass auth method: %w", err)
 	}
 
-	authInfo, err := client.Auth().Login(context.TODO(), userpassAuth)
+	authInfo, err := client.Auth().Login(context.Background(), userpassAuth)
 	if err != nil {
 		return nil, fmt.Errorf("unable to login to userpass auth method: %w", err)
 	}

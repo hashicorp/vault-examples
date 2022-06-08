@@ -41,7 +41,7 @@ func getSecretWithAppRole() (string, error) {
 		return "", fmt.Errorf("unable to initialize AppRole auth method: %w", err)
 	}
 
-	authInfo, err := client.Auth().Login(context.TODO(), appRoleAuth)
+	authInfo, err := client.Auth().Login(context.Background(), appRoleAuth)
 	if err != nil {
 		return "", fmt.Errorf("unable to login to AppRole auth method: %w", err)
 	}
@@ -49,8 +49,8 @@ func getSecretWithAppRole() (string, error) {
 		return "", fmt.Errorf("no auth info was returned after login")
 	}
 
-	// get secret
-	secret, err := client.KVv2("secret").Get(context.TODO(), "creds")
+	// get secret from the default mount path for KV v2 in dev mode, "secret"
+	secret, err := client.KVv2("secret").Get(context.Background(), "creds")
 	if err != nil {
 		return "", fmt.Errorf("unable to read secret: %w", err)
 	}
