@@ -33,7 +33,7 @@ func getSecretWithKubernetesAuth() (string, error) {
 		return "", fmt.Errorf("unable to initialize Kubernetes auth method: %w", err)
 	}
 
-	authInfo, err := client.Auth().Login(context.TODO(), k8sAuth)
+	authInfo, err := client.Auth().Login(context.Background(), k8sAuth)
 	if err != nil {
 		return "", fmt.Errorf("unable to log in with Kubernetes auth: %w", err)
 	}
@@ -41,23 +41,17 @@ func getSecretWithKubernetesAuth() (string, error) {
 		return "", fmt.Errorf("no auth info was returned after login")
 	}
 
-	// get secret from Vault
-	secret, err := client.Logical().Read("kv-v2/data/creds")
+	// get secret from Vault, from the default mount path for KV v2 in dev mode, "secret"
+	secret, err := client.KVv2("secret").Get(context.Background(), "creds")
 	if err != nil {
 		return "", fmt.Errorf("unable to read secret: %w", err)
 	}
 
-	data, ok := secret.Data["data"].(map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("data type assertion failed: %T %#v", secret.Data["data"], secret.Data["data"])
-	}
-
 	// data map can contain more than one key-value pair,
 	// in this case we're just grabbing one of them
-	key := "password"
-	value, ok := data[key].(string)
+	value, ok := secret.Data["password"].(string)
 	if !ok {
-		return "", fmt.Errorf("value type assertion failed: %T %#v", data[key], data[key])
+		return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
 	}
 
 	return value, nil

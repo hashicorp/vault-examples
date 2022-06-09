@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 
@@ -19,38 +20,30 @@ func main() {
 		log.Fatalf("unable to initialize Vault client: %v", err)
 	}
 
-	// Authentication
+	// Authenticate
 	client.SetToken("dev-only-token")
 
 	secretData := map[string]interface{}{
-		"data": map[string]interface{}{
-			"password": "Hashi123",
-		},
+		"password": "Hashi123",
 	}
 
-	// Writing a secret
-	_, err = client.Logical().Write("secret/data/my-secret-password", secretData)
+	// Write a secret
+	_, err = client.KVv2("secret").Put(context.Background(), "my-secret-password", secretData)
 	if err != nil {
 		log.Fatalf("unable to write secret: %v", err)
 	}
 
 	fmt.Println("Secret written successfully.")
 
-	// Reading a secret
-	secret, err := client.Logical().Read("secret/data/my-secret-password")
+	// Read a secret from the default mount path for KV v2 in dev mode, "secret"
+	secret, err := client.KVv2("secret").Get(context.Background(), "my-secret-password")
 	if err != nil {
 		log.Fatalf("unable to read secret: %v", err)
 	}
 
-	data, ok := secret.Data["data"].(map[string]interface{})
+	value, ok := secret.Data["password"].(string)
 	if !ok {
-		log.Fatalf("data type assertion failed: %T %#v", secret.Data["data"], secret.Data["data"])
-	}
-
-	key := "password"
-	value, ok := data[key].(string)
-	if !ok {
-		log.Fatalf("value type assertion failed: %T %#v", data[key], data[key])
+		log.Fatalf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
 	}
 
 	if value != "Hashi123" {
