@@ -1,0 +1,27 @@
+# Python Vault Client Application Dependencies
+# 이 파일은 Python Vault 클라이언트 애플리케이션의 의존성을 정의합니다.
+
+# Vault 클라이언트 라이브러리
+hvac==2.3.0
+
+# 환경변수 지원
+python-dotenv==1.0.0
+
+# HTTP 요청 라이브러리 (hvac 내부에서 사용)
+requests>=2.25.0
+
+# JSON 처리 (Python 표준 라이브러리 사용)
+# json - Python 표준 라이브러리
+
+# 설정 파일 처리 (Python 표준 라이브러리 사용)
+# configparser - Python 표준 라이브러리
+
+# 스레딩 및 스케줄링 (Python 표준 라이브러리 사용)
+# threading - Python 표준 라이브러리
+# time - Python 표준 라이브러리
+
+# 로깅 (Python 표준 라이브러리 사용)
+# logging - Python 표준 라이브러리
+
+# 시그널 처리 (Python 표준 라이브러리 사용)
+# signal - Python 표준 라이브러리

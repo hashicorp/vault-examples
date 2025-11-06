@@ -57,6 +57,24 @@ Hello-Vault:
 - [Go](https://github.com/hashicorp/hello-vault-go)
 - [C#](https://github.com/hashicorp/hello-vault-dotnet)
 
+## Client Applications
+
+For complete, runnable client application examples that demonstrate real-world Vault integration patterns, see the [Client Applications](examples/client-applications/) directory.
+
+These examples include:
+- Complete applications in multiple languages (C, C++, Java, Python, Spring Boot, Tomcat)
+- Script examples using Vault Proxy
+- Real-world patterns for authentication, token renewal, and secret management
+- Multiple secret engine support (KV v2, Database Dynamic/Static, SSH, AWS)
+
+Each example includes:
+- Full source code
+- Build and run instructions
+- Configuration examples
+- Detailed documentation
+
+See the [Client Applications README](examples/client-applications/README.md) for more details.
+
 ## How To Contribute
 
 If you would like to submit a code example to this repo, please create a file
