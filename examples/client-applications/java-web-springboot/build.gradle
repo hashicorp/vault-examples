@@ -1,0 +1,94 @@
+plugins {
+    id 'org.springframework.boot' version '3.4.10'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'war'
+}
+
+group = 'com.example.vaultweb'
+version = '1.0.0'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', "2024.0.0")
+}
+
+dependencies {
+    // Spring Boot Starters
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    
+    // Spring Cloud Vault
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
+    
+    // Thymeleaf Support (Spring Boot 3.x)
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    
+    // Database
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'com.zaxxer:HikariCP'
+    
+    // JSON Processing
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.core:jackson-core'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations'
+    
+    // Logging
+    implementation 'ch.qos.logback:logback-classic'
+    implementation 'ch.qos.logback:logback-core'
+    
+    // Development Tools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// JAR 파일명 설정
+jar {
+    enabled = false
+    archiveClassifier = ''
+}
+
+// WAR 파일명 설정
+war {
+    archiveBaseName = 'vault-web-app'
+    archiveVersion = '1.0.0'
+    archiveClassifier = ''
+}
+
+// Spring Boot 실행 설정
+bootRun {
+    systemProperty 'spring.profiles.active', 'dev'
+    jvmArgs = ['-Xmx1024m', '-Xms512m']
+}
+
+// 빌드 정보
+springBoot {
+    buildInfo()
+}

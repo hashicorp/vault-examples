@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: vault-web-app
+  cloud:
+    vault:
+      namespace: ns1
+      authentication: APPROLE
+      app-role:
+        role-id: e0ae84d1-7aad-b5a3-d2f1-d782480378d5
+        secret-id: d65d2af7-5030-df18-7d50-bc0403b0a3a3
+      host: 127.0.0.1
+      port: 8200
+      scheme: http
+      fail-fast: true
+      kv:
+        enabled: false
+      config:
+        lifecycle:
+          enabled: true
+          min-renewal: 5s
+          expiry-threshold: 10s
+      generic:
+        enabled: false
+      database:
+        enabled: true
+        role: db-demo-dynamic
+        backend: my-vault-app-database
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/mydb

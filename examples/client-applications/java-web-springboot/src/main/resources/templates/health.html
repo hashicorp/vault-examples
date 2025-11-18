@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Check - Vault Spring Boot App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .content {
+            padding: 30px;
+        }
+        .status-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .status-up {
+            border-left: 5px solid #28a745;
+        }
+        .status-down {
+            border-left: 5px solid #dc3545;
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        .status-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .status-value {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .status-value.up {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-value.down {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .timestamp {
+            color: #6c757d;
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .back-link:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Health Check</h1>
+            <p>Vault Spring Boot Web Application</p>
+        </div>
+        
+        <div class="content">
+            <div class="status-card" th:classappend="${health.status == 'UP'} ? 'status-up' : 'status-down'">
+                <h3>📊 Application Status</h3>
+                <div class="status-item">
+                    <span class="status-label">Overall Status</span>
+                    <span class="status-value" th:classappend="${health.status == 'UP'} ? 'up' : 'down'" 
+                          th:text="${health.status}">UP</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Application</span>
+                    <span th:text="${health.application}">Vault Spring Boot Web App</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Vault Status</span>
+                    <span class="status-value" th:classappend="${health.vault_status == 'CONNECTED'} ? 'up' : 'down'" 
+                          th:text="${health.vault_status}">CONNECTED</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Database Status</span>
+                    <span class="status-value" th:classappend="${health.database_status == 'success'} ? 'up' : 'down'" 
+                          th:text="${health.database_status}">success</span>
+                </div>
+                <div class="status-item" th:if="${health.secrets_count != null}">
+                    <span class="status-label">Secrets Count</span>
+                    <span th:text="${health.secrets_count}">0</span>
+                </div>
+            </div>
+            
+            <div class="status-card" th:if="${health.error != null}">
+                <h3>❌ Error Details</h3>
+                <p th:text="${health.error}">No errors</p>
+            </div>
+            
+            <div class="timestamp">
+                <p>Last checked: <span th:text="${health.timestamp}">2025-10-14T16:30:50</span></p>
+            </div>
+            
+            <a href="/vault-web/" class="back-link">← Back to Main Page</a>
+        </div>
+    </div>
+</body>
+</html>

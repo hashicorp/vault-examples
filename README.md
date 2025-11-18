@@ -35,10 +35,29 @@ retrieve secrets.
   - Uses community-maintained library [HVAC](https://hvac.readthedocs.io/en/stable/overview.html)
   - Provided examples:
     - [Quick Start](examples/_quick-start/python/example.py) with Token Auth
+    - [Client Application](examples/client-applications/python/) with AppRole Auth, Token Renewal, and Secret Management
 - Java (Spring)
   - Uses community-maintained library [spring-vault](https://spring.io/projects/spring-vault)
   - Provided examples:
     - [Quick Start](examples/_quick-start/java/Example.java) with Token Auth
+    - [Client Applications](examples/client-applications/):
+      - [Pure Java](examples/client-applications/java-pure/) with AppRole Auth, Token Renewal, and Secret Management
+      - [Spring Boot Web](examples/client-applications/java-web-springboot/) with Spring Cloud Vault Config and Web UI
+      - [Tomcat Web](examples/client-applications/java-web-tomcat/) with Servlet + JSP and Token Auto-Renewal
+- C
+  - Uses [libcurl](https://curl.se/libcurl/) and [json-c](https://github.com/json-c/json-c)
+  - Provided examples:
+    - [Client Application](examples/client-applications/c/) with AppRole Auth, Token Renewal, and Secret Management
+- C++
+  - Uses [libcurl](https://curl.se/libcurl/) and [nlohmann/json](https://github.com/nlohmann/json) (C++17)
+  - Provided examples:
+    - [Client Application](examples/client-applications/cpp/) with AppRole Auth, Token Renewal, and Secret Management
+- Script (Bash)
+  - Uses [curl](https://curl.se/) and [jq](https://stedolan.github.io/jq/) with [Vault Proxy](https://developer.hashicorp.com/vault/docs/agent-and-proxy/proxy)
+  - Provided examples:
+    - [Script Samples](examples/client-applications/script-sample/) with Vault Proxy integration
+    - Supports KV, Database Dynamic/Static, SSH (KV/OTP/Signed Certificate), and AWS secrets
+    - No Vault CLI required, uses pure curl
 
 ## How To Use
 
@@ -56,6 +75,24 @@ Hello-Vault:
 
 - [Go](https://github.com/hashicorp/hello-vault-go)
 - [C#](https://github.com/hashicorp/hello-vault-dotnet)
+
+## Client Applications
+
+For complete, runnable client application examples that demonstrate real-world Vault integration patterns, see the [Client Applications](examples/client-applications/) directory.
+
+These examples include:
+- Complete applications in multiple languages (C, C++, Java, Python, Spring Boot, Tomcat)
+- Script examples using Vault Proxy
+- Real-world patterns for authentication, token renewal, and secret management
+- Multiple secret engine support (KV v2, Database Dynamic/Static, SSH, AWS)
+
+Each example includes:
+- Full source code
+- Build and run instructions
+- Configuration examples
+- Detailed documentation
+
+See the [Client Applications README](examples/client-applications/README.md) for more details.
 
 ## How To Contribute
 

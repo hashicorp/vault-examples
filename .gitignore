@@ -12,3 +12,18 @@ dotnet/ExampleTests/
 [Bb]in/
 [Oo]bj/
 [Tt]estResults/
+
+# Build artifacts
+examples/client-applications/**/build/
+examples/client-applications/**/target/
+examples/client-applications/**/.gradle/
+examples/client-applications/**/__pycache__/
+examples/client-applications/**/venv/
+examples/client-applications/**/.venv/
+examples/client-applications/**/node_modules/
+examples/client-applications/**/*.o
+examples/client-applications/**/*.so
+examples/client-applications/**/*.dylib
+examples/client-applications/**/vault-app
+examples/client-applications/**/vault-app.exe
+examples/client-applications/**/.vault-setup.env
