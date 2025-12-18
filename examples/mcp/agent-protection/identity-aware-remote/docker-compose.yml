@@ -1,0 +1,168 @@
+services:
+  # Keycloak - Identity Provider (Dev Mode)
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4
+    container_name: keycloak
+    environment:
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT: false
+      KC_HTTP_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    ports:
+      - "8080:8080"
+    networks:
+      - mcp-network
+
+  # HashiCorp Vault
+  vault:
+    image: hashicorp/vault:1.21
+    container_name: vault
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: root-token
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+      VAULT_ADDR: http://0.0.0.0:8200
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./vault/config.hcl:/vault/config/config.hcl:ro
+    command: vault server -dev -dev-root-token-id=root-token -config=/vault/config/config.hcl
+    networks:
+      - mcp-network
+    depends_on:
+      - keycloak
+
+  # Mock Jira API
+  mock-jira:
+    build:
+      context: ./mock-services/jira-api
+    container_name: mock-jira
+    ports:
+      - "8001:8000"
+    networks:
+      - mcp-network
+    environment:
+      - PORT=8000
+
+  # Mock Github API
+  mock-github:
+    build:
+      context: ./mock-services/github-api
+    container_name: mock-github
+    ports:
+      - "8002:8000"
+    networks:
+      - mcp-network
+    environment:
+      - PORT=8000
+
+  # PostgreSQL Database
+  postgresql:
+    image: postgres:17
+    container_name: postgresql
+    ports:
+      - "5432:5432"
+    networks:
+      - mcp-network
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+      - POSTGRES_DB=mcp_demo
+    volumes:
+      - ./init-postgresql.sql:/docker-entrypoint-initdb.d/init-postgresql.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Jira MCP Server
+  jira-mcp-server:
+    build:
+      context: ./mcp-servers/jira-server
+    container_name: jira-mcp-server
+    ports:
+      - "3001:3000"
+    networks:
+      - mcp-network
+    environment:
+      - VAULT_ADDR=http://vault:8200
+      - KEYCLOAK_URL=http://keycloak:8080
+      - MOCK_JIRA_URL=http://mock-jira:8000
+      - PORT=3000
+    depends_on:
+      - vault
+      - mock-jira
+      - keycloak
+
+  # Github MCP Server
+  github-mcp-server:
+    build:
+      context: ./mcp-servers/github-server
+    container_name: github-mcp-server
+    ports:
+      - "3002:3000"
+    networks:
+      - mcp-network
+    environment:
+      - VAULT_ADDR=http://vault:8200
+      - KEYCLOAK_URL=http://keycloak:8080
+      - MOCK_GITHUB_URL=http://mock-github:8000
+      - PORT=3000
+    depends_on:
+      - vault
+      - mock-github
+      - keycloak
+
+  # PostgreSQL MCP Server
+  postgresql-mcp-server:
+    build:
+      context: ./mcp-servers/postgresql-server
+    container_name: postgresql-mcp-server
+    ports:
+      - "3003:3000"
+    networks:
+      - mcp-network
+    environment:
+      - VAULT_ADDR=http://vault:8200
+      - KEYCLOAK_URL=http://keycloak:8080
+      - POSTGRES_HOST=postgresql
+      - POSTGRES_PORT=5432
+      - PORT=3000
+    depends_on:
+      - vault
+      - postgresql
+      - keycloak
+
+  # Streamlit MCP Client
+  streamlit-client:
+    build:
+      context: ./streamlit-client
+    container_name: streamlit-client
+    ports:
+      - "8501:8501"
+    networks:
+      - mcp-network
+    environment:
+      - KEYCLOAK_URL=http://keycloak:8080
+      - REALM_NAME=mcp-demo
+      - CLIENT_ID=mcp-client
+      - CLIENT_SECRET=mcp-client-secret
+      - JIRA_MCP_URL=http://jira-mcp-server:3000
+      - GITHUB_MCP_URL=http://github-mcp-server:3000
+      - POSTGRESQL_MCP_URL=http://postgresql-mcp-server:3000
+      - DOCKER_ENV=true
+    depends_on:
+      - keycloak
+      - jira-mcp-server
+      - github-mcp-server
+      - postgresql-mcp-server
+
+networks:
+  mcp-network:
+    driver: bridge
+

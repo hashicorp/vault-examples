@@ -94,6 +94,21 @@ Each example includes:
 
 See the [Client Applications README](examples/client-applications/README.md) for more details.
 
+## MCP Examples
+
+### Identity-Aware Remote MCP Examples (Agent Protection)
+
+For examples demonstrating Vault integration with Model Context Protocol (MCP) servers for identity-aware credential management, see the [MCP Examples](examples/mcp/agent-protection/identity-aware-remote/) directory.
+
+The identity-aware remote example demonstrates:
+- User-specific credential separation using Vault Policy Templating
+- JWT-based authentication with Keycloak integration
+- Remote MCP servers retrieving user-specific credentials from Vault
+- Multiple secret engine support (KV v2, Database Dynamic Secrets)
+- Authentication flow tracing and credential debugging
+
+See the [MCP Remote Vault Demo README](examples/mcp/agent-protection/identity-aware-remote/README.md) and [Quick Start Guide](examples/mcp/agent-protection/identity-aware-remote/QUICKSTART.md) for more details.
+
 ## How To Contribute
 
 If you would like to submit a code example to this repo, please create a file
