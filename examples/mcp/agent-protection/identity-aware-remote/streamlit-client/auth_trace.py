@@ -1,6 +1,6 @@
 """
 Authentication Flow Trace Module
-디버깅용 인증 흐름 추적 기능
+Authentication flow trace functionality for debugging
 """
 import streamlit as st
 import httpx
@@ -232,14 +232,14 @@ def get_vault_info_direct(jwt_token: str, mcp_name: Optional[str] = None) -> Dic
 def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str, jwt_token: str, completed_steps: list, current_step: int):
     """Display authentication flow trace using directly retrieved Vault information"""
     st.header("Authentication Flow Trace (Debug Info)")
-    st.info("이 정보는 Streamlit에서 JWT를 사용하여 Vault에 직접 접근하여 가져온 것입니다. 실제 MCP Server에서는 각각의 서버가 자체적으로 Vault에 접근하여 자격증명을 가져옵니다.")
-    st.markdown("인증 및 API 요청 흐름을 단계별로 추적합니다.")
+    st.info("This information is retrieved by directly accessing Vault using JWT from Streamlit. In actual MCP Servers, each server independently accesses Vault to retrieve credentials.")
+    st.markdown("Tracks authentication and API request flow step by step.")
     
     # Get failed steps from session state
     failed_steps = st.session_state.get("step_failed", {})
     
     # Step indicator (horizontal progress bar)
-    st.markdown("### 진행 상태")
+    st.markdown("### Progress Status")
     step_names = [
         "User Login",
         "JWT Issued",
@@ -270,19 +270,19 @@ def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str
             if is_failed:
                 status_icon = "❌"
                 status_color = "red"
-                status_text = "실패"
+                status_text = "Failed"
             elif is_completed:
                 status_icon = "✅"
                 status_color = "green"
-                status_text = "완료"
+                status_text = "Completed"
             elif is_current:
                 status_icon = "🔄"
                 status_color = "blue"
-                status_text = "진행중"
+                status_text = "In Progress"
             else:
                 status_icon = "⏳"
                 status_color = "gray"
-                status_text = "대기중"
+                status_text = "Waiting"
             
             # Create styled container for each step
             bg_color = '#ffebee' if is_failed else '#e8f5e9' if is_completed else '#e3f2fd' if is_current else '#f5f5f5'
@@ -339,20 +339,20 @@ def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str
         
         if is_completed:
             status_icon = "✅"
-            status_text = "완료"
+            status_text = "Completed"
             expander_label = f"{status_icon} Step {step_num}: User Login (Keycloak) - {status_text}"
         elif is_current:
             status_icon = "🔄"
-            status_text = "진행 중"
+            status_text = "In Progress"
             expander_label = f"{status_icon} Step {step_num}: User Login (Keycloak) - {status_text}"
         else:
             status_icon = "⏳"
-            status_text = "대기 중"
+            status_text = "Waiting"
             expander_label = f"{status_icon} Step {step_num}: User Login (Keycloak) - {status_text}"
         
         with st.expander(expander_label, expanded=is_current or is_completed):
             if not is_completed:
-                st.info("이 단계는 아직 완료되지 않았습니다.")
+                st.info("This step has not been completed yet.")
             else:
                 col1, col2 = st.columns(2)
                 with col1:
@@ -373,20 +373,20 @@ def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str
         
         if is_completed:
             status_icon = "✅"
-            status_text = "완료"
+            status_text = "Completed"
             expander_label = f"{status_icon} Step {step_num}: JWT Token Issued - {status_text}"
         elif is_current:
             status_icon = "🔄"
-            status_text = "진행 중"
+            status_text = "In Progress"
             expander_label = f"{status_icon} Step {step_num}: JWT Token Issued - {status_text}"
         else:
             status_icon = "⏳"
-            status_text = "대기 중"
+            status_text = "Waiting"
             expander_label = f"{status_icon} Step {step_num}: JWT Token Issued - {status_text}"
         
         with st.expander(expander_label, expanded=is_current or is_completed):
             if not is_completed:
-                st.info("이 단계는 아직 완료되지 않았습니다.")
+                st.info("This step has not been completed yet.")
             else:
                 st.markdown("**JWT Token (masked):**")
                 token_preview = jwt_token[:20] + "..." + jwt_token[-20:] if jwt_token else "N/A"
@@ -420,20 +420,20 @@ def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str
         
         if is_completed:
             status_icon = "✅"
-            status_text = "완료"
+            status_text = "Completed"
             expander_label = f"{status_icon} Step {step_num}: MCP Server Request (with JWT) - {status_text}"
         elif is_current:
             status_icon = "🔄"
-            status_text = "진행 중"
+            status_text = "In Progress"
             expander_label = f"{status_icon} Step {step_num}: MCP Server Request (with JWT) - {status_text}"
         else:
             status_icon = "⏳"
-            status_text = "대기 중"
+            status_text = "Waiting"
             expander_label = f"{status_icon} Step {step_num}: MCP Server Request (with JWT) - {status_text}"
         
         with st.expander(expander_label, expanded=is_current or is_completed):
             if not is_completed:
-                st.info("이 단계는 아직 완료되지 않았습니다.")
+                st.info("This step has not been completed yet.")
             else:
                 col1, col2 = st.columns(2)
                 with col1:
@@ -454,20 +454,20 @@ def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str
         
         if is_completed:
             status_icon = "✅"
-            status_text = "완료"
+            status_text = "Completed"
             expander_label = f"{status_icon} Step {step_num}: Vault Authentication - {status_text}"
         elif is_current:
             status_icon = "🔄"
-            status_text = "진행 중"
+            status_text = "In Progress"
             expander_label = f"{status_icon} Step {step_num}: Vault Authentication - {status_text}"
         else:
             status_icon = "⏳"
-            status_text = "대기 중"
+            status_text = "Waiting"
             expander_label = f"{status_icon} Step {step_num}: Vault Authentication - {status_text}"
         
         with st.expander(expander_label, expanded=is_current or is_completed):
             if not is_completed:
-                st.info("이 단계는 아직 완료되지 않았습니다.")
+                st.info("This step has not been completed yet.")
             else:
                 if vault_auth_info:
                     col1, col2 = st.columns(2)
@@ -507,20 +507,20 @@ def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str
         
         if is_completed:
             status_icon = "✅"
-            status_text = "완료"
+            status_text = "Completed"
             expander_label = f"{status_icon} Step {step_num}: Entity Created/Retrieved - {status_text}"
         elif is_current:
             status_icon = "🔄"
-            status_text = "진행 중"
+            status_text = "In Progress"
             expander_label = f"{status_icon} Step {step_num}: Entity Created/Retrieved - {status_text}"
         else:
             status_icon = "⏳"
-            status_text = "대기 중"
+            status_text = "Waiting"
             expander_label = f"{status_icon} Step {step_num}: Entity Created/Retrieved - {status_text}"
         
         with st.expander(expander_label, expanded=is_current or is_completed):
             if not is_completed:
-                st.info("이 단계는 아직 완료되지 않았습니다.")
+                st.info("This step has not been completed yet.")
             else:
                 if vault_auth_info:
                     st.markdown("**Entity Aliases:**")
@@ -552,19 +552,19 @@ def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str
         
         if is_failed:
             status_icon = "❌"
-            status_text = "실패"
+            status_text = "Failed"
             expander_label = f"{status_icon} Step {step_num}: Credentials Retrieved - {status_text}"
         elif is_completed:
             status_icon = "✅"
-            status_text = "완료"
+            status_text = "Completed"
             expander_label = f"{status_icon} Step {step_num}: Credentials Retrieved - {status_text}"
         elif is_current:
             status_icon = "🔄"
-            status_text = "진행 중"
+            status_text = "In Progress"
             expander_label = f"{status_icon} Step {step_num}: Credentials Retrieved - {status_text}"
         else:
             status_icon = "⏳"
-            status_text = "대기 중"
+            status_text = "Waiting"
             expander_label = f"{status_icon} Step {step_num}: Credentials Retrieved - {status_text}"
         
         with st.expander(expander_label, expanded=is_current or is_completed or is_failed):
@@ -574,11 +574,11 @@ def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str
             
             if is_failed:
                 error_msg = failed_steps.get(step_num, "Unknown error")
-                st.error(f"❌ **실패**: {error_msg}")
+                st.error(f"❌ **Failed**: {error_msg}")
                 
                 # Show credentials info for each MCP
                 if mcp_credentials:
-                    st.markdown("### MCP 서버별 자격증명 상태")
+                    st.markdown("### Credential Status by MCP Server")
                     for mcp_name in selected_mcps:
                         if mcp_name in mcp_credentials:
                             cred_info = mcp_credentials[mcp_name]
@@ -593,7 +593,7 @@ def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str
                                     st.markdown(f"**Path:** `{cred_info.get('vault_path', 'N/A')}`")
                                     if not cred_info.get("secret_exists", False):
                                         error = cred_info.get("secret_error", "Secret not found")
-                                        st.error(f"**오류:** {error}")
+                                        st.error(f"**Error:** {error}")
                 else:
                     # Fallback to old vault_info for backward compatibility
                     if vault_info:
@@ -603,13 +603,13 @@ def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str
                         if secret_error:
                             st.code(secret_error, language=None)
                 
-                st.warning("⚠️ 일부 MCP 서버는 Vault에 자격증명이 저장되어 있지 않아 사용할 수 없습니다.")
+                st.warning("⚠️ Some MCP servers cannot be used because credentials are not stored in Vault.")
             elif not is_completed:
-                st.info("이 단계는 아직 완료되지 않았습니다.")
+                st.info("This step has not been completed yet.")
             else:
                 # Show credentials info for each MCP
                 if mcp_credentials:
-                    st.markdown("### MCP 서버별 자격증명 상태")
+                    st.markdown("### Credential Status by MCP Server")
                     all_success = True
                     
                     for mcp_name in selected_mcps:
@@ -642,7 +642,7 @@ def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str
                                 st.divider()
                     
                     if all_success:
-                        st.success("✅ 모든 선택된 MCP 서버의 자격증명이 정상적으로 로드되었습니다.")
+                        st.success("✅ Credentials for all selected MCP servers have been loaded successfully.")
                 else:
                     # Fallback to old vault_info for backward compatibility
                     if vault_info:
@@ -668,5 +668,5 @@ def display_auth_trace(vault_info: Optional[Dict], mcp_info: Dict, username: str
                         st.warning("Vault information not available")
         
         st.divider()
-        st.markdown("**Note:** 실제 MCP Server (Jira, Github)에서는 각각의 서버가 독립적으로 Vault에 접근하여 자체 자격증명을 가져옵니다. 이 Debug Info는 Streamlit에서 직접 가져온 정보를 보여주는 것입니다.")
+        st.markdown("**Note:** In actual MCP Servers (Jira, Github), each server independently accesses Vault to retrieve its own credentials. This Debug Info shows information retrieved directly from Streamlit.")
 

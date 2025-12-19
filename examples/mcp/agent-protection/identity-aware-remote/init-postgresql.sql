@@ -1,13 +1,13 @@
--- PostgreSQL 초기화 스크립트
--- 기본 데이터베이스와 테스트 테이블 생성
+-- PostgreSQL initialization script
+-- Create default database and test tables
 
--- Vault 관리자 사용자 생성 (Database secrets engine에서 사용)
+-- Create Vault admin user (used by Database secrets engine)
 CREATE USER vault_admin WITH PASSWORD 'vault-admin-password-12345';
 GRANT ALL PRIVILEGES ON DATABASE mcp_demo TO vault_admin;
 GRANT ALL PRIVILEGES ON SCHEMA public TO vault_admin;
 ALTER USER vault_admin WITH CREATEDB CREATEROLE;
 
--- Users 테이블 생성 (vault_admin 소유)
+-- Create Users table (owned by vault_admin)
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 ALTER TABLE users OWNER TO vault_admin;
 
--- Products 테이블 생성 (vault_admin 소유)
+-- Create Products table (owned by vault_admin)
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS products (
 );
 ALTER TABLE products OWNER TO vault_admin;
 
--- Orders 테이블 생성 (vault_admin 소유)
+-- Create Orders table (owned by vault_admin)
 CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS orders (
 );
 ALTER TABLE orders OWNER TO vault_admin;
 
--- 초기 데이터 삽입
+-- Insert initial data
 INSERT INTO users (username, email) VALUES
     ('alice', 'alice@example.com'),
     ('bob', 'bob@example.com'),

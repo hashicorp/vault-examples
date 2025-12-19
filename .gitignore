@@ -7,6 +7,7 @@ examples/auth-methods/*/go/path
 examples/token-renewal/go/path
 local-testing/
 .vscode/
+.token
 
 dotnet/ExampleTests/
 [Bb]in/

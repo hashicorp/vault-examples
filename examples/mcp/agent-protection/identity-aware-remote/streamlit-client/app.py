@@ -195,7 +195,7 @@ def main():
     with col1:
         keycloak_url = "http://localhost:8080"
         st.link_button("🔐 Keycloak", f"{keycloak_url}/admin", use_container_width=True)
-        st.caption("관리자: `admin` / `admin`")
+        st.caption("Admin: `admin` / `admin`")
     with col2:
         vault_url = "http://localhost:8200"
         st.link_button("🔑 Vault", f"{vault_url}/ui", use_container_width=True)
@@ -262,7 +262,7 @@ def main():
             
             # MCP Selection
             st.header("Select MCP Server")
-            st.info("💡 **사용할 MCP 서버를 선택하세요.** 하나 이상의 서버를 선택할 수 있습니다.")
+            st.info("💡 **Select MCP server(s) to use.** You can select one or more servers.")
             
             mcp_options = list(MCP_SERVERS.keys())
             selected_mcps = []
@@ -443,17 +443,17 @@ def main():
                         # Show results
                         if step3_failed:
                             # Step 3 failures (MCP server connection issues)
-                            st.error(f"⚠️ 다음 MCP 서버에 연결할 수 없습니다: {', '.join(failed_mcps)}")
+                            st.error(f"⚠️ Unable to connect to the following MCP server(s): {', '.join(failed_mcps)}")
                         elif step6_failed_mcps:
                             # Step 6 failures (credentials/role not found)
                             if "Jira" in step6_failed_mcps:
-                                st.error(f"⚠️ 사용 불가: 이 사용자({st.session_state.user_info.get('preferred_username', 'unknown')})는 Jira 자격증명이 Vault에 저장되어 있지 않습니다.")
-                                st.info("💡 **참고**: 이 데모에서는 alice 사용자만 Jira 자격증명을 가지고 있습니다. bob 사용자는 자격증명이 없어 MCP 서버를 사용할 수 없습니다.")
+                                st.error(f"⚠️ Unavailable: This user ({st.session_state.user_info.get('preferred_username', 'unknown')}) does not have Jira credentials stored in Vault.")
+                                st.info("💡 **Note**: In this demo, only the alice user has Jira credentials. The bob user does not have credentials and cannot use the MCP server.")
                             elif "PostgreSQL" in step6_failed_mcps:
-                                st.error(f"⚠️ 사용 불가: 이 사용자({st.session_state.user_info.get('preferred_username', 'unknown')})는 PostgreSQL database role이 Vault에 생성되어 있지 않습니다.")
-                                st.info("💡 **참고**: PostgreSQL MCP 서버는 Vault Database Secrets Engine의 role을 사용합니다. role이 없으면 동적 자격증명을 생성할 수 없습니다.")
+                                st.error(f"⚠️ Unavailable: This user ({st.session_state.user_info.get('preferred_username', 'unknown')}) does not have a PostgreSQL database role created in Vault.")
+                                st.info("💡 **Note**: The PostgreSQL MCP server uses roles from the Vault Database Secrets Engine. Without a role, dynamic credentials cannot be generated.")
                             else:
-                                st.error(f"⚠️ 다음 MCP 서버에서 자격증명 오류가 발생했습니다: {', '.join(step6_failed_mcps)}")
+                                st.error(f"⚠️ Credential errors occurred for the following MCP server(s): {', '.join(step6_failed_mcps)}")
                         
                         if loaded_count > 0:
                             st.success(f"Loaded tools from {loaded_count} MCP server(s)")
