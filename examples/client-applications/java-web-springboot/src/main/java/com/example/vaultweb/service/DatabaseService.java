@@ -17,7 +17,8 @@ import java.util.Map;
 
 /**
  * Database Service Class
- * Connects to Database using credentials from Vault and retrieves table information
+ * Connects to Database using credentials from Vault and retrieves table
+ * information
  */
 @Service
 public class DatabaseService {
@@ -49,22 +50,22 @@ public class DatabaseService {
       result.put("url", metaData.getURL());
       result.put("username", metaData.getUserName());
 
-      logger.info("✅ Database connection successful");
-      logger.info("🗄️ Database Info: {} {}",
+      logger.info("Database connection successful");
+      logger.info("Database Info: {} {}",
           metaData.getDatabaseProductName(), metaData.getDatabaseProductVersion());
 
       // Log result data
-      logger.info("📊 Database Connection Result: {}", result);
+      logger.info("Database Connection Result: {}", result);
 
       connection.close();
       logger.info("Connection closed successfully");
 
     } catch (SQLException e) {
-      logger.error("❌ Database connection failed: {}", e.getMessage());
+      logger.error("Database connection failed: {}", e.getMessage());
       result.put("status", "error");
       result.put("error", e.getMessage());
     } catch (Exception e) {
-      logger.error("❌ Unexpected error during database connection: {}", e.getMessage());
+      logger.error("Unexpected error during database connection: {}", e.getMessage());
       result.put("status", "error");
       result.put("error", "Unexpected error: " + e.getMessage());
     }
@@ -98,12 +99,12 @@ public class DatabaseService {
         }
       }
 
-      logger.info("✅ Table list fetch successful ({} tables)", tables.size());
-      tables.forEach(table -> logger.info("📋 Table: {} ({})",
+      logger.info("Table list fetch successful ({} tables)", tables.size());
+      tables.forEach(table -> logger.info("Table: {} ({})",
           table.get("table_name"), table.get("table_type")));
 
     } catch (SQLException e) {
-      logger.error("❌ Table list fetch failed: {}", e.getMessage());
+      logger.error("Table list fetch failed: {}", e.getMessage());
     }
 
     return tables;
@@ -135,12 +136,12 @@ public class DatabaseService {
         }
       }
 
-      logger.info("✅ Table column fetch successful: {} ({} columns)", tableName, columns.size());
-      columns.forEach(column -> logger.info("📊 Column: {} ({})",
+      logger.info("Table column fetch successful: {} ({} columns)", tableName, columns.size());
+      columns.forEach(column -> logger.info("Column: {} ({})",
           column.get("column_name"), column.get("type_name")));
 
     } catch (SQLException e) {
-      logger.error("❌ Table column fetch failed: {} - {}", tableName, e.getMessage());
+      logger.error("Table column fetch failed: {} - {}", tableName, e.getMessage());
     }
 
     return columns;
@@ -172,12 +173,12 @@ public class DatabaseService {
       List<Map<String, Object>> tables = getTables();
       stats.put("table_count", tables.size());
 
-      logger.info("✅ Database statistics fetch successful");
-      logger.info("📊 Database Stats: {} tables, {} max connections",
+      logger.info("Database statistics fetch successful");
+      logger.info("Database Stats: {} tables, {} max connections",
           tables.size(), metaData.getMaxConnections());
 
     } catch (SQLException e) {
-      logger.error("❌ Database statistics fetch failed: {}", e.getMessage());
+      logger.error("Database statistics fetch failed: {}", e.getMessage());
       stats.put("error", e.getMessage());
     }
 

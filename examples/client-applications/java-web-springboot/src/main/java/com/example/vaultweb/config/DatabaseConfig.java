@@ -53,10 +53,10 @@ public class DatabaseConfig {
       logger.info("Setting default driver: {}", this.driverClassName);
     }
 
-    // Set default value if URL is null
+    // Throw error if URL is null (required in configuration file)
     if (this.url == null) {
-      this.url = "jdbc:mysql://127.0.0.1:3306/mydb";
-      logger.info("Setting default URL: {}", this.url);
+      logger.error("Database URL is not configured. Please set spring.datasource.url in application.yml.");
+      throw new IllegalStateException("Database URL is not configured.");
     }
 
     // Check credential source from Vault configuration
@@ -75,9 +75,21 @@ public class DatabaseConfig {
           // Retrieve credentials from KV Secret
           var kvSecret = vaultSecretService.getKvSecret();
           if (kvSecret != null && kvSecret.getData() != null) {
-            finalUsername = (String) kvSecret.getData().get("database_username");
-            finalPassword = (String) kvSecret.getData().get("database_password");
-            logger.info("✅ Using KV Secret credentials: {}", finalUsername);
+            // Get key names from configuration
+            String usernameKey = vaultConfig.getDatabase() != null
+                && vaultConfig.getDatabase().getKv() != null
+                && vaultConfig.getDatabase().getKv().getUsernameKey() != null
+                    ? vaultConfig.getDatabase().getKv().getUsernameKey()
+                    : "database_username";
+            String passwordKey = vaultConfig.getDatabase() != null
+                && vaultConfig.getDatabase().getKv() != null
+                && vaultConfig.getDatabase().getKv().getPasswordKey() != null
+                    ? vaultConfig.getDatabase().getKv().getPasswordKey()
+                    : "database_password";
+
+            finalUsername = (String) kvSecret.getData().get(usernameKey);
+            finalPassword = (String) kvSecret.getData().get(passwordKey);
+            logger.info("Using KV Secret credentials: {} (keys: {}/{})", finalUsername, usernameKey, passwordKey);
           }
           break;
 
@@ -87,7 +99,7 @@ public class DatabaseConfig {
           if (staticSecret != null && staticSecret.getData() != null) {
             finalUsername = (String) staticSecret.getData().get("username");
             finalPassword = (String) staticSecret.getData().get("password");
-            logger.info("✅ Using Static Secret credentials: {}", finalUsername);
+            logger.info("Using Static Secret credentials: {}", finalUsername);
           }
           break;
 
@@ -96,18 +108,22 @@ public class DatabaseConfig {
           // Retrieve credentials from Database Dynamic Secret
           String role = vaultConfig.getDatabase() != null
               && vaultConfig.getDatabase().getDynamic() != null
+              && vaultConfig.getDatabase().getDynamic().getRole() != null
                   ? vaultConfig.getDatabase().getDynamic().getRole()
-                  : "db-demo-dynamic";
+                  : (vaultConfig.getDatabase() != null
+                      && vaultConfig.getDatabase().getRole() != null
+                          ? vaultConfig.getDatabase().getRole()
+                          : "db-demo-dynamic");
           var dynamicSecret = vaultSecretService.getDatabaseCredentials(role);
           if (dynamicSecret != null && dynamicSecret.getData() != null) {
             finalUsername = (String) dynamicSecret.getData().get("username");
             finalPassword = (String) dynamicSecret.getData().get("password");
-            logger.info("✅ Using Dynamic Secret credentials: {}", finalUsername);
+            logger.info("Using Dynamic Secret credentials: {} (role: {})", finalUsername, role);
           }
           break;
       }
     } catch (Exception e) {
-      logger.error("❌ Failed to retrieve Vault credentials, using defaults: {}", e.getMessage());
+      logger.error("Failed to retrieve Vault credentials, using defaults: {}", e.getMessage());
     }
 
     HikariConfig config = new HikariConfig();

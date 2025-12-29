@@ -5,6 +5,7 @@ server:
 
 vault:
   database:
+    backend: my-vault-app-database  # Database backend mount path
     credential-source: kv  # Select one of: kv, dynamic, static
     kv:
       path: my-vault-app-kv/data/database

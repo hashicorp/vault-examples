@@ -28,3 +28,7 @@ examples/client-applications/**/*.dylib
 examples/client-applications/**/vault-app
 examples/client-applications/**/vault-app.exe
 examples/client-applications/**/.vault-setup.env
+
+# Logs
+examples/client-applications/**/logs/
+examples/client-applications/**/*.log

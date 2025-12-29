@@ -6,8 +6,8 @@ spring:
       namespace: ns1
       authentication: APPROLE
       app-role:
-        role-id: e0ae84d1-7aad-b5a3-d2f1-d782480378d5
-        secret-id: d65d2af7-5030-df18-7d50-bc0403b0a3a3
+        role-id: c8e12566-efa3-c054-c4a8-7b077b4907ae
+        secret-id: b36278fd-a011-57d6-4438-8bc40b967cf2
       host: 127.0.0.1
       port: 8200
       scheme: http

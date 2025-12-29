@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.vault.core.VaultTemplate;
 import org.springframework.vault.support.VaultResponse;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +36,8 @@ public class VaultSecretService {
   @Value("${vault.kv.database_url:}")
   private String kvDatabaseUrl;
 
-  // Database Dynamic secret (automatically injected from Spring Cloud Vault Config)
+  // Database Dynamic secret (automatically injected from Spring Cloud Vault
+  // Config)
   @Value("${spring.datasource.username:}")
   private String dbDynamicUsername;
 
@@ -55,8 +55,15 @@ public class VaultSecretService {
     try {
       logger.info("=== KV Secret Refresh ===");
 
+      // Get KV path from configuration
+      String kvPath = vaultConfig.getDatabase() != null
+          && vaultConfig.getDatabase().getKv() != null
+          && vaultConfig.getDatabase().getKv().getPath() != null
+              ? vaultConfig.getDatabase().getKv().getPath()
+              : "my-vault-app-kv/data/database";
+
       // Retrieve KV data directly from Vault
-      VaultResponse response = vaultTemplate.read("my-vault-app-kv/data/database");
+      VaultResponse response = vaultTemplate.read(kvPath);
       Map<String, Object> kvData = new HashMap<>();
 
       if (response != null && response.getData() != null) {
@@ -74,26 +81,31 @@ public class VaultSecretService {
         if (response.getMetadata() != null && response.getMetadata().get("version") != null) {
           version = response.getMetadata().get("version").toString();
         }
-        logger.info("✅ KV secret fetch successful (version: {})", version);
-        logger.info("📦 KV Secret Data (version: {}): {}", version, kvData);
+        logger.info("KV secret fetch successful (version: {})", version);
+        logger.info("KV Secret Data (version: {}): {}", version, kvData);
 
-        SecretInfo secretInfo = new SecretInfo("KV", "my-vault-app-kv/data/database", kvData);
+        SecretInfo secretInfo = new SecretInfo("KV", kvPath, kvData);
         secretInfo.setVersion(version);
         return secretInfo;
       } else {
         // Use values injected from Spring Cloud Vault Config
         kvData.put("api_key", kvApiKey != null ? kvApiKey : "");
         kvData.put("database_url", kvDatabaseUrl != null ? kvDatabaseUrl : "");
-        logger.info("📦 KV Secret Data (from config): {}", kvData);
+        logger.info("KV Secret Data (from config): {}", kvData);
 
-        SecretInfo secretInfo = new SecretInfo("KV", "my-vault-app-kv/data/database", kvData);
+        SecretInfo secretInfo = new SecretInfo("KV", kvPath, kvData);
         secretInfo.setVersion("1");
         return secretInfo;
       }
 
     } catch (Exception e) {
-      logger.error("❌ KV secret fetch failed: {}", e.getMessage());
-      return createErrorSecretInfo("KV", "my-vault-app-kv/data/database", e.getMessage());
+      logger.error("KV secret fetch failed: {}", e.getMessage());
+      String kvPath = vaultConfig.getDatabase() != null
+          && vaultConfig.getDatabase().getKv() != null
+          && vaultConfig.getDatabase().getKv().getPath() != null
+              ? vaultConfig.getDatabase().getKv().getPath()
+              : "my-vault-app-kv/data/database";
+      return createErrorSecretInfo("KV", kvPath, e.getMessage());
     }
   }
 
@@ -104,16 +116,32 @@ public class VaultSecretService {
     try {
       logger.info("=== Database Dynamic Secret Refresh ===");
 
+      // Get Database backend and role from configuration
+      String backend = vaultConfig.getDatabase() != null
+          && vaultConfig.getDatabase().getBackend() != null
+              ? vaultConfig.getDatabase().getBackend()
+              : "my-vault-app-database";
+
+      String role = vaultConfig.getDatabase() != null
+          && vaultConfig.getDatabase().getDynamic() != null
+          && vaultConfig.getDatabase().getDynamic().getRole() != null
+              ? vaultConfig.getDatabase().getDynamic().getRole()
+              : (vaultConfig.getDatabase() != null
+                  && vaultConfig.getDatabase().getRole() != null
+                      ? vaultConfig.getDatabase().getRole()
+                      : "db-demo-dynamic");
+
+      String path = backend + "/creds/" + role;
+
       // Retrieve latest credentials via direct Vault API call
-      VaultResponse response = vaultTemplate.read("my-vault-app-database/creds/db-demo-dynamic");
+      VaultResponse response = vaultTemplate.read(path);
 
       if (response != null && response.getData() != null) {
         Map<String, Object> dbData = new HashMap<>();
         dbData.put("username", response.getData().get("username"));
         dbData.put("password", response.getData().get("password"));
 
-        SecretInfo secretInfo = new SecretInfo("Database Dynamic",
-            "my-vault-app-database/creds/db-demo-dynamic", dbData);
+        SecretInfo secretInfo = new SecretInfo("Database Dynamic", path, dbData);
 
         // Set lease information
         if (response.getLeaseId() != null) {
@@ -124,8 +152,8 @@ public class VaultSecretService {
         }
         secretInfo.setRenewable(response.isRenewable());
 
-        logger.info("✅ Database Dynamic secret fetch successful (TTL: {}s)", secretInfo.getTtl());
-        logger.info("🗄️ Database Dynamic Secret (TTL: {}s): username: {}, password: {}",
+        logger.info("Database Dynamic secret fetch successful (TTL: {}s)", secretInfo.getTtl());
+        logger.info("Database Dynamic Secret (TTL: {}s): username: {}, password: {}",
             secretInfo.getTtl(), response.getData().get("username"), "***");
 
         return secretInfo;
@@ -134,9 +162,21 @@ public class VaultSecretService {
       }
 
     } catch (Exception e) {
-      logger.error("❌ Database Dynamic secret fetch failed: {}", e.getMessage());
-      return createErrorSecretInfo("Database Dynamic",
-          "my-vault-app-database/creds/db-demo-dynamic", e.getMessage());
+      logger.error("Database Dynamic secret fetch failed: {}", e.getMessage());
+      String backend = vaultConfig.getDatabase() != null
+          && vaultConfig.getDatabase().getBackend() != null
+              ? vaultConfig.getDatabase().getBackend()
+              : "my-vault-app-database";
+      String role = vaultConfig.getDatabase() != null
+          && vaultConfig.getDatabase().getDynamic() != null
+          && vaultConfig.getDatabase().getDynamic().getRole() != null
+              ? vaultConfig.getDatabase().getDynamic().getRole()
+              : (vaultConfig.getDatabase() != null
+                  && vaultConfig.getDatabase().getRole() != null
+                      ? vaultConfig.getDatabase().getRole()
+                      : "db-demo-dynamic");
+      String path = backend + "/creds/" + role;
+      return createErrorSecretInfo("Database Dynamic", path, e.getMessage());
     }
   }
 
@@ -147,18 +187,24 @@ public class VaultSecretService {
     try {
       logger.info("=== Database Dynamic Secret API Call ===");
 
-      String path = "my-vault-app-database/creds/" + roleName;
+      // Get Database backend from configuration
+      String backend = vaultConfig.getDatabase() != null
+          && vaultConfig.getDatabase().getBackend() != null
+              ? vaultConfig.getDatabase().getBackend()
+              : "my-vault-app-database";
+
+      String path = backend + "/creds/" + roleName;
       VaultResponse response = vaultTemplate.read(path);
 
       if (response != null && response.getData() != null) {
-        logger.info("✅ Database Dynamic secret API call successful: {}", path);
+        logger.info("Database Dynamic secret API call successful: {}", path);
         return response;
       } else {
         throw new RuntimeException("Database Dynamic secret not found: " + path);
       }
 
     } catch (Exception e) {
-      logger.error("❌ Database Dynamic secret API call failed: {}", e.getMessage());
+      logger.error("Database Dynamic secret API call failed: {}", e.getMessage());
       throw new RuntimeException("Database Dynamic secret fetch failed: " + e.getMessage());
     }
   }
@@ -170,19 +216,32 @@ public class VaultSecretService {
     try {
       logger.info("=== Database Static Secret Refresh ===");
 
+      // Get Database backend and static role from configuration
+      String backend = vaultConfig.getDatabase() != null
+          && vaultConfig.getDatabase().getBackend() != null
+              ? vaultConfig.getDatabase().getBackend()
+              : "my-vault-app-database";
+
+      String role = vaultConfig.getDatabase() != null
+          && vaultConfig.getDatabase().getStaticCreds() != null
+          && vaultConfig.getDatabase().getStaticCreds().getRole() != null
+              ? vaultConfig.getDatabase().getStaticCreds().getRole()
+              : "db-demo-static";
+
+      String path = backend + "/static-creds/" + role;
+
       // Retrieve Static secret via direct Vault API call
-      VaultResponse response = vaultTemplate.read("my-vault-app-database/static-creds/db-demo-static");
+      VaultResponse response = vaultTemplate.read(path);
 
       if (response != null && response.getData() != null) {
         Map<String, Object> dbData = (Map<String, Object>) response.getData();
 
-        SecretInfo secretInfo = new SecretInfo("Database Static",
-            "my-vault-app-database/static-creds/db-demo-static", dbData);
+        SecretInfo secretInfo = new SecretInfo("Database Static", path, dbData);
         secretInfo.setTtl(3600L);
         secretInfo.setRenewable(false);
 
-        logger.info("✅ Database Static secret fetch successful (TTL: {}s)", secretInfo.getTtl());
-        logger.info("🔒 Database Static Secret (TTL: {}s): {}",
+        logger.info("Database Static secret fetch successful (TTL: {}s)", secretInfo.getTtl());
+        logger.info("Database Static Secret (TTL: {}s): {}",
             secretInfo.getTtl(), dbData);
 
         return secretInfo;
@@ -191,9 +250,18 @@ public class VaultSecretService {
       }
 
     } catch (Exception e) {
-      logger.error("❌ Database Static secret fetch failed: {}", e.getMessage());
-      return createErrorSecretInfo("Database Static",
-          "my-vault-app-database/static-creds/db-demo-static", e.getMessage());
+      logger.error("Database Static secret fetch failed: {}", e.getMessage());
+      String backend = vaultConfig.getDatabase() != null
+          && vaultConfig.getDatabase().getBackend() != null
+              ? vaultConfig.getDatabase().getBackend()
+              : "my-vault-app-database";
+      String role = vaultConfig.getDatabase() != null
+          && vaultConfig.getDatabase().getStaticCreds() != null
+          && vaultConfig.getDatabase().getStaticCreds().getRole() != null
+              ? vaultConfig.getDatabase().getStaticCreds().getRole()
+              : "db-demo-static";
+      String path = backend + "/static-creds/" + role;
+      return createErrorSecretInfo("Database Static", path, e.getMessage());
     }
   }
 
@@ -208,7 +276,7 @@ public class VaultSecretService {
         ? vaultConfig.getDatabase().getCredentialSource()
         : "dynamic";
 
-    logger.info("🔍 Current credential source: {}", credentialSource);
+    logger.info("Current credential source: {}", credentialSource);
 
     // KV Secret is always retrieved (independent of Database credentials)
     secrets.put("kv", getKvSecret());
@@ -217,7 +285,7 @@ public class VaultSecretService {
     switch (credentialSource.toLowerCase()) {
       case "kv":
         // Use Database credentials from KV Secret (not displayed separately)
-        logger.info("📦 Database credentials: Using KV Secret");
+        logger.info("Database credentials: Using KV Secret");
         break;
       case "static":
         secrets.put("database_static", getDatabaseStaticSecret());
@@ -245,11 +313,11 @@ public class VaultSecretService {
    * Detect and log secret changes
    */
   public void logSecretChanges() {
-    logger.info("🔄 Starting secret renewal... (automatic renewal enabled)");
+    logger.info("Starting secret renewal... (automatic renewal enabled)");
 
     // Retrieve all secrets to detect changes
     getAllSecrets().forEach((key, secretInfo) -> {
-      logger.info("📊 {} secret status: {}", key, secretInfo.getType());
+      logger.info("{} secret status: {}", key, secretInfo.getType());
     });
   }
 }
