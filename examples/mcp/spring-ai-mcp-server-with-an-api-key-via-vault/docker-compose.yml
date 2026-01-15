@@ -1,0 +1,79 @@
+services:
+  vault:
+    image: hashicorp/vault:1.21.1
+    container_name: vault
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: myroot
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+      VAULT_ADDR: http://127.0.0.1:8200
+    cap_add:
+      - IPC_LOCK
+    command: ["vault", "server", "-dev"]
+    healthcheck:
+      test: ["CMD-SHELL", "VAULT_ADDR=http://127.0.0.1:8200 vault status"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    volumes:
+      - vault-data:/vault/data
+
+  vault-init:
+    image: hashicorp/vault:1.21.1
+    environment:
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: myroot
+    volumes:
+      - ./scripts/vault-init.sh:/vault-init.sh:ro
+      - .:/workspace
+    command: ["/bin/sh", "/vault-init.sh"]
+    depends_on:
+      vault:
+        condition: service_started
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-mcp-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_CLOUD_VAULT_URI: http://vault:8200
+      SPRING_CLOUD_VAULT_AUTHENTICATION: APPROLE
+      SPRING_CLOUD_VAULT_APP_ROLE_ROLE_ID: demo-role-id-12345
+      SPRING_CLOUD_VAULT_APP_ROLE_SECRET_ID: demo-secret-id-67890
+    depends_on:
+      vault-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  mcp-inspector:
+    image: ghcr.io/modelcontextprotocol/inspector:latest
+    container_name: mcp-inspector
+    ports:
+      - "6274:6274"
+      - "6277:6277"
+    environment:
+      HOST: "0.0.0.0"
+      CLIENT_PORT: "6274"
+      SERVER_PORT: "6277"
+      MCP_AUTO_OPEN_ENABLED: "false"
+      DANGEROUSLY_OMIT_AUTH: "true"
+    depends_on:
+      vault-init:
+        condition: service_completed_successfully
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  vault-data:

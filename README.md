@@ -96,6 +96,20 @@ See the [Client Applications README](examples/client-applications/README.md) for
 
 ## MCP Examples
 
+### Spring AI MCP Server with HashiCorp Vault
+
+For examples demonstrating how to secure a Spring AI Model Context Protocol (MCP) server using HashiCorp Vault for API key management, see the [Spring AI MCP Server with Vault](examples/mcp/spring-ai-mcp-server-with-an-api-key-via-vault/) directory.
+
+This example demonstrates:
+- API key management using HashiCorp Vault for centralized secret storage
+- AppRole authentication for machine-to-machine authentication
+- Spring Cloud Vault integration for seamless Vault access
+- API key validation via custom interceptor
+- KV v2 secrets engine for API key storage
+- Complete Docker Compose setup with Vault, Spring Boot, and MCP Inspector
+
+See the [Spring AI MCP Server with Vault README](examples/mcp/spring-ai-mcp-server-with-an-api-key-via-vault/README.md) for more details.
+
 ### Identity-Aware Remote MCP Examples (Agent Protection)
 
 For examples demonstrating Vault integration with Model Context Protocol (MCP) servers for identity-aware credential management, see the [MCP Examples](examples/mcp/agent-protection/identity-aware-remote/) directory.

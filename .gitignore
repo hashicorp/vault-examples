@@ -32,3 +32,10 @@ examples/client-applications/**/.vault-setup.env
 # Logs
 examples/client-applications/**/logs/
 examples/client-applications/**/*.log
+
+# Spring AI MCP Server with Vault
+examples/mcp/spring-ai-mcp-server-with-an-api-key-via-vault/.env
+examples/mcp/spring-ai-mcp-server-with-an-api-key-via-vault/inspector-config.json
+examples/mcp/spring-ai-mcp-server-with-an-api-key-via-vault/target/
+*.tmp
+*.bak

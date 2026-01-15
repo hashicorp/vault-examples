@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: mcp-server
+  cloud:
+    compatibility-verifier:
+      enabled: false
+    vault:
+      uri: ${SPRING_CLOUD_VAULT_URI:http://localhost:8200}
+      authentication: ${SPRING_CLOUD_VAULT_AUTHENTICATION:APPROLE}
+      app-role:
+        role-id: ${SPRING_CLOUD_VAULT_APP_ROLE_ROLE_ID:}
+        secret-id: ${SPRING_CLOUD_VAULT_APP_ROLE_SECRET_ID:}
+      kv:
+        enabled: true
+        backend: secret
+        default-context: mcp
+        profile-separator: "/"
+        application-name: mcp
+        backend-version: 2
+  ai:
+    mcp:
+      server:
+        name: mcp-server
+        version: 1.0.0
+        type: SYNC
+        protocol: STREAMABLE
+        capabilities:
+          tool: true
+          resource: true
+
+server:
+  port: 8080
