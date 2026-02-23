@@ -8,9 +8,10 @@ import sys
 client = hvac.Client(
     url='http://127.0.0.1:8200',
     token='dev-only-token',
+    namespace='admin',  # If namespace is configured, make sure to set here
 )
 
-# Writing a secret
+# Writing a secret in the default secret engine
 create_response = client.secrets.kv.v2.create_or_update_secret(
     path='my-secret-password',
     secret=dict(password='Hashi123'),
