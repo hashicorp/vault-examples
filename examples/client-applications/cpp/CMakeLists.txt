@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2021, 2026
+
 cmake_minimum_required(VERSION 3.10)
 project(vault-cpp-app)
 

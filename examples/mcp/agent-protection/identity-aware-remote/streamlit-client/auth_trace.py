@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2021, 2026
+
 """
 Authentication Flow Trace Module
 Authentication flow trace functionality for debugging

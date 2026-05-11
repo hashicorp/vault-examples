@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2021, 2026
+
 """
 Github MCP Server using FastMCP
 Handles MCP requests and retrieves credentials from Vault

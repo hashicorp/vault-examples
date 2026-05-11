@@ -1,3 +1,7 @@
+/*
+ * Copyright IBM Corp. 2021, 2026
+ */
+
 #ifndef VAULT_CLIENT_H
 #define VAULT_CLIENT_H
 

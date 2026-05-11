@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2021, 2026
+
 """
 Mock Github API Server
 Simulates Github API endpoints for demo purposes

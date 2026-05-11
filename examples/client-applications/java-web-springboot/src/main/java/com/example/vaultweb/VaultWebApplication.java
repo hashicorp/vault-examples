@@ -1,3 +1,7 @@
+/*
+ * Copyright IBM Corp. 2021, 2026
+ */
+
 package com.example.vaultweb;
 
 import org.springframework.boot.SpringApplication;

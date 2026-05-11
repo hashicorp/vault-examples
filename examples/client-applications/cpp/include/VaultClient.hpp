@@ -1,3 +1,5 @@
+// Copyright IBM Corp. 2021, 2026
+
 #ifndef VAULT_CLIENT_HPP
 #define VAULT_CLIENT_HPP
 

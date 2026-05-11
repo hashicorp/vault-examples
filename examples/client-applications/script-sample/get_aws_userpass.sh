@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright IBM Corp. 2021, 2026
+
 
 # Vault server and authentication path configuration
 export VAULT_ADDR="http://127.0.0.1:8200"  # Change to your Vault server address

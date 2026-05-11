@@ -1,3 +1,5 @@
+// Copyright IBM Corp. 2021, 2026
+
 #include "Config.hpp"
 #include <fstream>
 #include <iostream>
