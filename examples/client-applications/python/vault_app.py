@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2021, 2026
+
 # -*- coding: utf-8 -*-
 
 """

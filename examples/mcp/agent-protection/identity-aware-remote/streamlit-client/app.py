@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2021, 2026
+
 """
 Streamlit MCP Client
 Web UI for selecting and using MCP servers with Keycloak authentication

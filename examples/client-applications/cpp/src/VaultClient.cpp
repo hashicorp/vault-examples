@@ -1,3 +1,5 @@
+// Copyright IBM Corp. 2021, 2026
+
 #include "VaultClient.hpp"
 #include <iostream>
 #include <sstream>

@@ -1,3 +1,7 @@
+/*
+ * Copyright IBM Corp. 2021, 2026
+ */
+
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>

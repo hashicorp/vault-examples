@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2021, 2026
+
 FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app

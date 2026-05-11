@@ -1,3 +1,5 @@
+-- Copyright IBM Corp. 2021, 2026
+
 -- PostgreSQL initialization script
 -- Create default database and test tables
 

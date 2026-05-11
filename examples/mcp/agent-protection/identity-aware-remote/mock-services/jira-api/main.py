@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2021, 2026
+
 """
 Mock Jira API Server
 Simulates Jira API endpoints for demo purposes

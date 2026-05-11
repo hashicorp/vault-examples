@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright IBM Corp. 2021, 2026
+
 
 # SSH OTP Generation Script via Vault Proxy
 

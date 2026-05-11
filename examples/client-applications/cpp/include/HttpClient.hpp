@@ -1,3 +1,5 @@
+// Copyright IBM Corp. 2021, 2026
+
 #ifndef HTTP_CLIENT_HPP
 #define HTTP_CLIENT_HPP
 

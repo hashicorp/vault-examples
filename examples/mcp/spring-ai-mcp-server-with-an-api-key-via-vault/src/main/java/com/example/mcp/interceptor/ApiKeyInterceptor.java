@@ -1,3 +1,7 @@
+/*
+ * Copyright IBM Corp. 2021, 2026
+ */
+
 package com.example.mcp.interceptor;
 
 import com.example.mcp.config.ApiKeyProperties;

@@ -1,3 +1,5 @@
+// Copyright IBM Corp. 2021, 2026
+
 #ifndef CONFIG_HPP
 #define CONFIG_HPP
 

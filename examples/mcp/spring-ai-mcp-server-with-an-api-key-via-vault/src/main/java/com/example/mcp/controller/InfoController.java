@@ -1,3 +1,7 @@
+/*
+ * Copyright IBM Corp. 2021, 2026
+ */
+
 package com.example.mcp.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;

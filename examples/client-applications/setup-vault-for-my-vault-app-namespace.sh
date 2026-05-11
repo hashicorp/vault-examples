@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright IBM Corp. 2021, 2026
+
 
 # =============================================================================
 # Vault Development Server Auto-Configuration Script (with Namespace)
